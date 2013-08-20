@@ -5,7 +5,6 @@ package graph;
  * Imaplements a basic Vertex object. 
  * 
  * @author <a ref ="zianfanti@gmail.com"> Zian Fanti<a/>
- * @version 0.0.1-0
  */
 public class Vertex {
 
