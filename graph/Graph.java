@@ -1,11 +1,7 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package graph;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Set;
@@ -61,20 +57,21 @@ public class Graph {
             tempEdges.add(edge);
             graph.put(source, tempEdges);
         }
-
     }
 
     /**
-     *
-     * @param vertex
-     * @param edges
+     * Adds a vertex connected by some edges to the graph 
+     * 
+     * @param vertex the new vertex
+     * @param edges an ArrayList of the <code>Edge</code>s that conect this vertex 
+     * to the graph      
      */
     public void addConnectedVertex(Vertex vertex, ArrayList<Edge> edges) {
         graph.put(vertex, edges);
     }
 
     /**
-     *
+     * Add a disconnected vertex to the graph
      */
     public void addVertex(Vertex vertex) {
         ArrayList<Edge> edges = new ArrayList<Edge>();
@@ -82,7 +79,8 @@ public class Graph {
     }
 
     /**
-     *
+     * Add an <code>Edge</code> to the graph.
+     * 
      * @param edge
      */
     public void addEdge(Edge edge) {
@@ -93,8 +91,9 @@ public class Graph {
     }
 
     /**
-     *
-     * @return
+     * Get the number of vertexes
+     * 
+     * @return 
      */
     public int numOfVertexes() {
         return graph.size();
