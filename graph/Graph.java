@@ -106,17 +106,16 @@ public class Graph {
      *
      * @return
      */
-    public boolean isConnected() {
-    }
+//    public boolean isConnected() {
+//    }
 
     /**
      * Create a clone of this
      * <code>Graph</code>.
      *
      * @return a new <code>Graph</code> that's identically to this Graph.
-     */
-    @Override
-    public Graph clone() {
+     */    
+    public Graph duplicate() {
         Graph cloneGraph = new Graph(graph.size());
         for (Vertex vertex : graph.keySet()) {            
             cloneGraph.addConnectedVertex(vertex, (ArrayList<Edge>) graph.get(vertex));
