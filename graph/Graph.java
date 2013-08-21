@@ -93,6 +93,14 @@ public class Graph {
     }
 
     /**
+     * 
+     * @return 
+     */
+    public Set<Vertex> getVertexes() {
+       return graph.keySet(); 
+    }
+    
+    /**
      * Get the number of vertexes
      *
      * @return
@@ -108,21 +116,21 @@ public class Graph {
      */
 //    public boolean isConnected() {
 //    }
-
     /**
      * Create a clone of this
      * <code>Graph</code>.
      *
      * @return a new <code>Graph</code> that's identically to this Graph.
-     */    
+     */
     public Graph duplicate() {
         Graph cloneGraph = new Graph(graph.size());
-        for (Vertex vertex : graph.keySet()) {  
+        for (Vertex vertex : graph.keySet()) {
             Vertex v = new Vertex(vertex);
             cloneGraph.addConnectedVertex(v, (ArrayList<Edge>) graph.get(vertex));
         }
-        return cloneGraph;        
+        return cloneGraph;
     }
+
 
     /**
      * Build a string representation of the adjency matrix, corresponding of
@@ -140,7 +148,7 @@ public class Graph {
             Vertex v = (Vertex) vertexIterator.next();
             graphString += (v.getName() + " -> [");
             ArrayList<Edge> edges = graph.get((Vertex) v);
-            
+
             for (int i = 0; i < edges.size(); i++) {
                 graphString += (i == 0) ? "" : ", ";
                 Edge e = edges.get(i);
