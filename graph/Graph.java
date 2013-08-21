@@ -117,8 +117,9 @@ public class Graph {
      */    
     public Graph duplicate() {
         Graph cloneGraph = new Graph(graph.size());
-        for (Vertex vertex : graph.keySet()) {            
-            cloneGraph.addConnectedVertex(vertex, (ArrayList<Edge>) graph.get(vertex));
+        for (Vertex vertex : graph.keySet()) {  
+            Vertex v = new Vertex(vertex);
+            cloneGraph.addConnectedVertex(v, (ArrayList<Edge>) graph.get(vertex));
         }
         return cloneGraph;        
     }
