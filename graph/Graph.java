@@ -1,4 +1,3 @@
-
 package graph;
 
 import java.util.ArrayList;
@@ -38,20 +37,20 @@ public class Graph {
     }
 
     /**
-     * Create a graph with some vertxes and edges. The vertexes of the edges must 
-     * be contained in the vertexes set.
+     * Create a graph with some vertxes and edges. The vertexes of the edges
+     * must be contained in the vertexes set.
      *
      * @param vertexes an array of vertex
      * @param edges an array of edges
      */
     public Graph(Vertex[] vertexes, Edge[] edges) {
         this.graph = new HashMap<Vertex, ArrayList<Edge>>(vertexes.length);
-        
+
         for (int i = 0; i < vertexes.length; i++) {
             ArrayList<Edge> vertexEdges = new ArrayList<Edge>();
             graph.put(vertexes[i], vertexEdges);
         }
-        
+
         for (int i = 0; i < edges.length; i++) {
             Edge edge = edges[i];
             Vertex source = edge.getSource();
@@ -62,11 +61,11 @@ public class Graph {
     }
 
     /**
-     * Adds a vertex connected by some edges to the graph 
-     * 
+     * Adds a vertex connected by some edges to the graph
+     *
      * @param vertex the new vertex
-     * @param edges an ArrayList of the <code>Edge</code>s that conect this vertex 
-     * to the graph      
+     * @param edges an ArrayList of the <code>Edge</code>s that conect this
+     * vertex to the graph
      */
     public void addConnectedVertex(Vertex vertex, ArrayList<Edge> edges) {
         graph.put(vertex, edges);
@@ -81,8 +80,9 @@ public class Graph {
     }
 
     /**
-     * Add an <code>Edge</code> to the graph.
-     * 
+     * Add an
+     * <code>Edge</code> to the graph.
+     *
      * @param edge
      */
     public void addEdge(Edge edge) {
@@ -94,8 +94,8 @@ public class Graph {
 
     /**
      * Get the number of vertexes
-     * 
-     * @return 
+     *
+     * @return
      */
     public int numOfVertexes() {
         return graph.size();
@@ -103,12 +103,27 @@ public class Graph {
 
     /**
      * Compute if this Graph is connected. Use BFS traversing
-     * @return 
+     *
+     * @return
      */
     public boolean isConnected() {
-       
     }
-    
+
+    /**
+     * Create a clone of this
+     * <code>Graph</code>.
+     *
+     * @return a new <code>Graph</code> that's identically to this Graph.
+     */
+    @Override
+    public Graph clone() {
+        Graph cloneGraph = new Graph(graph.size());
+        for (Vertex vertex : graph.keySet()) {            
+            cloneGraph.addConnectedVertex(vertex, (ArrayList<Edge>) graph.get(vertex));
+        }
+        return cloneGraph;        
+    }
+
     /**
      * Build a string representation of the adjency matrix, corresponding of
      * this graph.
