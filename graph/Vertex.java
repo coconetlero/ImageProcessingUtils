@@ -31,8 +31,8 @@ public class Vertex {
      * @param vertex 
      */
     public Vertex(Vertex vertex) {
-        vertex.name = this.name;
-        vertex.parent = this.parent;
+        this.name = vertex.name;
+        this.parent = vertex.parent;
     }
 
     /**
