@@ -9,30 +9,37 @@ package graph;
 public class Vertex {
 
     /** The name of this vertex */
-    private Object name;
+    public int name;
 
     /** Vertex parent. If it had */
     private Vertex parent;
 
-    /**
-     * Flag for traversing algorithms 
-     */
+    /** Flag for traversing algorithms */
     private boolean visited;
     
     /**
-     * Name of the vertex
-     * @param name
+     * Create a vertex with an name
+     * @param name Name of the vertex
      */
     public Vertex(int name) {
         this.name = name;
         this.visited = false;
+    }
+    
+    /**
+     * C
+     * @param vertex 
+     */
+    public Vertex(Vertex vertex) {
+        vertex.name = this.name;
+        vertex.parent = this.parent;
     }
 
     /**
      * Return the name of this vertex
      * @return
      */
-    public Object getName() {
+    public int getName() {
         return name;
     }
 
@@ -52,9 +59,23 @@ public class Vertex {
         this.parent = v;
     }
 
+    /**
+     * @return the visited
+     */
+    public boolean isVisited() {
+        return visited;
+    }
+
+    /**
+     * @param visited the visited to set
+     */
+    public void setVisited(boolean visited) {
+        this.visited = visited;
+    }
+    
     @Override
     public int hashCode() {
-        return name.hashCode();
+        return name;
     }
 
     @Override
@@ -70,5 +91,5 @@ public class Vertex {
     @Override
     public String toString() {
         return "" + name;
-    }
+    }    
 }
