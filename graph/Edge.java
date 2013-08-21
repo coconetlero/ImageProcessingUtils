@@ -21,13 +21,11 @@ public class Edge {
      */
     private float weight;
 
-
     /**
      * Basic constructor
      */
     public Edge() {        
     }
-
 
     /**
      * An no weigth <code>Edge</code> constructor
@@ -41,7 +39,6 @@ public class Edge {
         this.weight = 0;
     }
 
-
     /**
      * A weighted Edge constructor
      * @param source <code>Vertex</code>
@@ -53,7 +50,6 @@ public class Edge {
         this.weight = weight;
     }
 
-
     /**
      * Construct a Edge from Edge data
      * @param edge
@@ -64,7 +60,6 @@ public class Edge {
             this.weight = edge.getWeight();        
     }
 
-
     /**
      * Return a new copy of this Edge with direction inverted
      * @return
@@ -72,7 +67,6 @@ public class Edge {
     public Edge invert() {
         return new Edge(target, source, weight);
     }
-
 
     /**
      *
@@ -92,7 +86,6 @@ public class Edge {
         return false;
     }
 
-
     @Override
     public int hashCode() {
         int hash = 5;
@@ -101,14 +94,12 @@ public class Edge {
         return hash;
     }
 
-
     @Override
     public String toString() {
             return "(" + source.getName() + 
                     " - " + this.weight + " - " +
                     target.getName() + ")";
     }
-
 
     /**
      * @return the source
@@ -117,14 +108,12 @@ public class Edge {
         return source;
     }
 
-
     /**
      * @param source the source to set
      */
     public void setSource(Vertex source) {
         this.source = source;
     }
-
 
     /**
      * @return the target
@@ -133,14 +122,12 @@ public class Edge {
         return target;
     }
 
-
     /**
      * @param target the target to set
      */
     public void setTarget(Vertex target) {
         this.target = target;
     }
-
 
     /**
      * @return the value
@@ -149,12 +136,10 @@ public class Edge {
         return weight;
     }
 
-
     /**
      * @param weight the value to set
      */
     public void setWeight(float weight) {        
         this.weight = weight;
-    }
-    
+    }   
 }

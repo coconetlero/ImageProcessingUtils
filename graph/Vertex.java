@@ -9,7 +9,7 @@ package graph;
 public class Vertex {
 
     /** The name of this vertex */
-    public int name;
+    private int name;
 
     /** Vertex parent. If it had */
     private Vertex parent;
