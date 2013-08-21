@@ -140,6 +140,7 @@ public class Graph {
             Vertex v = (Vertex) vertexIterator.next();
             graphString += (v.getName() + " -> [");
             ArrayList<Edge> edges = graph.get((Vertex) v);
+            
             for (int i = 0; i < edges.size(); i++) {
                 graphString += (i == 0) ? "" : ", ";
                 Edge e = edges.get(i);
