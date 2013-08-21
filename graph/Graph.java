@@ -93,13 +93,27 @@ public class Graph {
     }
 
     /**
-     * 
-     * @return 
+     * Return all vertexes contained in this graph as a <code>Set</code>
+     * @return
      */
     public Set<Vertex> getVertexes() {
-       return graph.keySet(); 
+        return graph.keySet();
     }
     
+    /**
+     * Get all the edges of the given vertex in this graph.
+     * @param vertex contained in this graph
+     * @return 
+     */
+    public ArrayList<Edge> getEdges(Vertex vertex) {
+        if (graph.containsKey(vertex)) {
+            return graph.get(vertex);
+        } else {
+            throw new NullPointerException("Vertex " + vertex + 
+                    " does not belong to the graph");                  
+        }
+    }
+
     /**
      * Get the number of vertexes
      *
@@ -116,6 +130,8 @@ public class Graph {
      */
 //    public boolean isConnected() {
 //    }
+    
+    
     /**
      * Create a clone of this
      * <code>Graph</code>.
@@ -131,6 +147,7 @@ public class Graph {
         return cloneGraph;
     }
 
+    
 
     /**
      * Build a string representation of the adjency matrix, corresponding of
