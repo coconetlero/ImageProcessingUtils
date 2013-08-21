@@ -15,11 +15,17 @@ public class Vertex {
     private Vertex parent;
 
     /**
+     * Flag for traversing algorithms 
+     */
+    private boolean visited;
+    
+    /**
      * Name of the vertex
      * @param name
      */
     public Vertex(int name) {
         this.name = name;
+        this.visited = false;
     }
 
     /**
