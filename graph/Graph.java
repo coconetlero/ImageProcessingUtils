@@ -7,10 +7,9 @@ import java.util.Iterator;
 import java.util.Set;
 
 /**
- * An ady
+ * An imlplementation of a generic graph
  *
  * @author <a ref ="zianfanti@gmail.com"> Zian Fanti<a/>
- * @version 0.0.1-0
  */
 public class Graph {
 
@@ -32,6 +31,9 @@ public class Graph {
      * @param numOfVertexex total amout of vertex
      */
     public Graph(int numOfVertexex) {
+        if (numOfVertexex < 0) {
+            throw new IllegalArgumentException("Number of vertices must be nonnegative");
+        }
         this.graph = new HashMap<Vertex, ArrayList<Edge>>(numOfVertexex);
     }
 
@@ -99,6 +101,14 @@ public class Graph {
         return graph.size();
     }
 
+    /**
+     * Compute if this Graph is connected. Use BFS traversing
+     * @return 
+     */
+    public boolean isConnected() {
+       
+    }
+    
     /**
      * Build a string representation of the adjency matrix, corresponding of
      * this graph.
