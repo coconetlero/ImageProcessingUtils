@@ -93,24 +93,27 @@ public class Graph {
     }
 
     /**
-     * Return all vertexes contained in this graph as a <code>Set</code>
+     * Return all vertexes contained in this graph as a
+     * <code>Set</code>
+     *
      * @return
      */
     public Set<Vertex> getVertexes() {
         return graph.keySet();
     }
-    
+
     /**
      * Get all the edges of the given vertex in this graph.
+     *
      * @param vertex contained in this graph
-     * @return 
+     * @return
      */
     public ArrayList<Edge> getEdges(Vertex vertex) {
         if (graph.containsKey(vertex)) {
             return graph.get(vertex);
         } else {
-            throw new NullPointerException("Vertex " + vertex + 
-                    " does not belong to the graph");                  
+            throw new NullPointerException("Vertex " + vertex
+                    + " does not belong to the graph");
         }
     }
 
@@ -130,8 +133,6 @@ public class Graph {
      */
 //    public boolean isConnected() {
 //    }
-    
-    
     /**
      * Create a clone of this
      * <code>Graph</code>.
@@ -147,7 +148,40 @@ public class Graph {
         return cloneGraph;
     }
 
-    
+    /**
+     * Create an undirected graph, from this graph. The new undirected graph 
+     * duplicate all directed edges in this graph but in opossite direction, only 
+     * if the edge doesn't exists.  
+     * 
+     * @return a new <code>Graph</code> with no directed paths. 
+     */
+    public Graph makeUndirectedGraph() {        
+        Graph undirectedGraph = this.duplicate();
+
+        for (Vertex vertex : undirectedGraph.getVertexes()) {
+            ArrayList<Edge> E = undirectedGraph.getEdges(vertex);
+            for (Edge edge : E) {
+                ArrayList<Edge> tE = undirectedGraph.getEdges(edge.getTarget());
+                if (tE.isEmpty()) {
+                    tE.add(new Edge(edge.getTarget(), edge.getSource(), edge.getWeight()));
+                } else {
+                    Edge temp = new Edge(edge.getTarget(), edge.getSource(), edge.getWeight());
+                    boolean found = false;
+                    for (Edge te : tE) {
+                        if (te.equals(temp)) {
+                            found = true;
+                            break;
+                        }                        
+                    }
+                    if (!found) {
+                        tE.add(temp);
+                    }
+                }
+            }
+        }
+                
+        return undirectedGraph;
+    }
 
     /**
      * Build a string representation of the adjency matrix, corresponding of
