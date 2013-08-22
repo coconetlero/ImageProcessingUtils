@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.Stack;
 
 /**
  * An imlplementation of a generic graph
@@ -111,7 +112,8 @@ public class Graph {
     public ArrayList<Edge> getEdges(Vertex vertex) {
         if (graph.containsKey(vertex)) {
             return graph.get(vertex);
-        } else {
+        }
+        else {
             throw new NullPointerException("Vertex " + vertex
                     + " does not belong to the graph");
         }
@@ -149,13 +151,13 @@ public class Graph {
     }
 
     /**
-     * Create an undirected graph, from this graph. The new undirected graph 
-     * duplicate all directed edges in this graph but in opossite direction, only 
-     * if the edge doesn't exists.  
-     * 
-     * @return a new <code>Graph</code> with no directed paths. 
+     * Create an undirected graph, from this graph. The new undirected graph
+     * duplicate all directed edges in this graph but in opossite direction,
+     * only if the edge doesn't exists.
+     *
+     * @return a new <code>Graph</code> with no directed paths.
      */
-    public Graph makeUndirectedGraph() {        
+    public Graph makeUndirectedGraph() {
         Graph undirectedGraph = this.duplicate();
 
         for (Vertex vertex : undirectedGraph.getVertexes()) {
@@ -164,14 +166,15 @@ public class Graph {
                 ArrayList<Edge> tE = undirectedGraph.getEdges(edge.getTarget());
                 if (tE.isEmpty()) {
                     tE.add(new Edge(edge.getTarget(), edge.getSource(), edge.getWeight()));
-                } else {
+                }
+                else {
                     Edge temp = new Edge(edge.getTarget(), edge.getSource(), edge.getWeight());
                     boolean found = false;
                     for (Edge te : tE) {
                         if (te.equals(temp)) {
                             found = true;
                             break;
-                        }                        
+                        }
                     }
                     if (!found) {
                         tE.add(temp);
@@ -179,8 +182,73 @@ public class Graph {
                 }
             }
         }
-                
+
         return undirectedGraph;
+    }
+
+    /**
+     * Find a path between source and target vertexes into this graph, using the
+     * Depth-first search algoritm for traversingthe graph.
+     *
+     * @param source vertex
+     * @param target vertex
+     * @return an <code>ArrayList</code> containing the path between source and
+     * target vertexes as a sequence.
+     */
+    public Vertex[] pathDFS(Vertex source, Vertex target) {
+        if (graph.containsKey(source) && graph.containsKey(target)) {
+            Graph tree = new Graph();
+
+            Stack<Vertex> S = new Stack<Vertex>();
+            S.push(source);
+            source.setVisited(true);
+            boolean pathFound = false;
+
+            // create a tree until target is reached 
+            while (!S.empty() && !pathFound) {
+                Vertex v = S.pop();
+                ArrayList<Edge> E = new ArrayList<Edge>();
+                // if v has an unvisited neighbour w                
+                for (Edge edge : graph.get(v)) {
+                    Vertex tempVertex = edge.getTarget();
+                    if (tempVertex.equals(target)) {                        
+                        E.add(new Edge(v, tempVertex));
+                        S.push(tempVertex);
+                        tempVertex.setVisited(true);
+                        tempVertex.setParent(v);
+                        pathFound = true;
+                        break;
+                    } 
+                    else if (!tempVertex.isVisited()) {
+                        E.add(new Edge(v, tempVertex));
+                        S.push(tempVertex);
+                        tempVertex.setVisited(true);
+                        tempVertex.setParent(v);
+                    }
+                }
+                tree.addConnectedVertex(v, E);
+            }
+            
+            // from target retrieve the source
+            //System.out.println("tree =>\n " + tree.toString());
+
+            Stack<Vertex> sPath = new Stack<Vertex>();
+            sPath.push(target);
+            Vertex current = target;            
+            while(current.getParent() != null) {
+                current = target.getParent();
+                if (current != null) {
+                    sPath.push(current);
+                }
+            }
+            
+            Vertex[] path = new Vertex[sPath.size()];            
+            return sPath.toArray(path);
+        }
+        else {
+            throw new NullPointerException("Vertex source " + source + " or Vertex target "
+                    + target + " does not belong to the graph");
+        }
     }
 
     /**
@@ -204,11 +272,10 @@ public class Graph {
                 graphString += (i == 0) ? "" : ", ";
                 Edge e = edges.get(i);
                 graphString += ("(" + e.getTarget().getName() + ", "
-                        + e.getWeight() + ")");
+                                + e.getWeight() + ")");
             }
             graphString += ("] \n");
         }
-
         return graphString;
     }
 }
