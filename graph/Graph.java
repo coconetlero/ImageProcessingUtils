@@ -211,14 +211,14 @@ public class Graph {
                 // if v has an unvisited neighbour w                
                 for (Edge edge : graph.get(v)) {
                     Vertex tempVertex = edge.getTarget();
-                    if (tempVertex.equals(target)) {                        
+                    if (tempVertex.equals(target)) {
                         E.add(new Edge(v, tempVertex));
                         S.push(tempVertex);
                         tempVertex.setVisited(true);
                         tempVertex.setParent(v);
                         pathFound = true;
                         break;
-                    } 
+                    }
                     else if (!tempVertex.isVisited()) {
                         E.add(new Edge(v, tempVertex));
                         S.push(tempVertex);
@@ -228,21 +228,15 @@ public class Graph {
                 }
                 tree.addConnectedVertex(v, E);
             }
-            
-            // from target retrieve the source
-            //System.out.println("tree =>\n " + tree.toString());
 
+            // from target retrieve the source
             Stack<Vertex> sPath = new Stack<Vertex>();
             sPath.push(target);
-            Vertex current = target;            
-            while(current.getParent() != null) {
-                current = target.getParent();
-                if (current != null) {
-                    sPath.push(current);
-                }
+            while (sPath.peek().getParent() != null) {                
+                sPath.push(sPath.peek().getParent());
             }
-            
-            Vertex[] path = new Vertex[sPath.size()];            
+
+            Vertex[] path = new Vertex[sPath.size()];
             return sPath.toArray(path);
         }
         else {
