@@ -94,13 +94,27 @@ public class Graph {
     }
 
     /**
-     * Return all vertexes contained in this graph as a
-     * <code>Set</code>
+     * Return all vertexes contained in this graph as a <code>Set</code>
      *
      * @return
      */
     public Set<Vertex> getVertexes() {
         return graph.keySet();
+    }
+    
+    /**
+     * Return all vertexes contained in this graph as an Array.
+     *
+     * @return an array containing all vertexes of this graph.
+     */
+    public Vertex[] getVertexesArray() {
+        Vertex[] V = new Vertex[graph.size()];
+        int i = 0;
+        for (Vertex v : this.getVertexes()) {
+            V[i] = v;
+            i++;
+        }        
+        return V;        
     }
 
     /**
@@ -188,7 +202,8 @@ public class Graph {
 
     /**
      * Find a path between source and target vertexes into this graph, using the
-     * Depth-first search algoritm for traversingthe graph.
+     * Depth-first search algoritm for traversingthe graph. This function works 
+     * with directed or undirected no weighted graphs.
      *
      * @param source vertex
      * @param target vertex
@@ -235,7 +250,7 @@ public class Graph {
             while (sPath.peek().getParent() != null) {                
                 sPath.push(sPath.peek().getParent());
             }
-
+            System.out.println(sPath);
             Vertex[] path = new Vertex[sPath.size()];
             return sPath.toArray(path);
         }
@@ -244,7 +259,7 @@ public class Graph {
                     + target + " does not belong to the graph");
         }
     }
-
+    
     /**
      * Build a string representation of the adjency matrix, corresponding of
      * this graph.
