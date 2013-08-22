@@ -8,17 +8,17 @@ package graph;
  */
 public class Vertex {
 
-    /** The name of this vertex */
+    /** The name of this vertex. */
     private int name;
 
-    /** Vertex parent. If it had */
+    /** Vertex parent. If it had, this variable is useful for tree represetantions */
     private Vertex parent;
 
     /** Flag for traversing algorithms */
     private boolean visited;
     
     /**
-     * Create a vertex with an name
+     * Create a vertex with an name.
      * @param name Name of the vertex
      */
     public Vertex(int name) {
@@ -27,7 +27,7 @@ public class Vertex {
     }
     
     /**
-     * C
+     * Create a new Vertex from another Vertex. 
      * @param vertex 
      */
     public Vertex(Vertex vertex) {
