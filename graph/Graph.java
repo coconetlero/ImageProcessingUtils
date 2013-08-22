@@ -259,6 +259,16 @@ public class Graph {
                     + target + " does not belong to the graph");
         }
     }
+        
+    /**
+     * Test if the graph contains the given vertex.
+     * 
+     * @param vertex 
+     * @return true if the graph contians the given vertex and false in other case.
+     */
+    public boolean contains(Vertex vertex) {
+        return graph.containsKey(vertex);
+    }
     
     /**
      * Build a string representation of the adjency matrix, corresponding of
