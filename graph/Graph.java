@@ -141,6 +141,21 @@ public class Graph {
                     + " does not belong to the graph");
         }
     }
+    
+    /**
+     * Return a reference into graph for the given Edge
+     * @param edge
+     * @return the Edge if the graph contains the Edge or null in other case.
+     */
+    public Edge getEdge(Edge edge) {
+        ArrayList<Edge> edges = graph.get(edge.getSource());
+        for (Edge e : edges) {
+            if(e.equals(edge)) {
+                return e;
+            }                
+        }        
+        return null;
+    }
 
     /**
      * Get the number of vertexes
