@@ -274,6 +274,15 @@ public class Graph {
     }
 
     /**
+     * Set all vertices to unvisited 
+     */
+    public void setUnvisitedGraph() {
+        for(Vertex v : graph.keySet()) {
+            v.setVisited(false);
+        }
+    }
+    
+    /**
      * Build a string representation of the adjency matrix, corresponding of
      * this graph.
      *
