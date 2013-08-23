@@ -92,7 +92,7 @@ public class FordFulkerson {
      * @return an <code>ArrayList</code> containing the path between source and
      * target vertexes as a sequence.
      */
-    public Edge[] findPath(Vertex source, Vertex target) {
+    private Edge[] findPath(Vertex source, Vertex target) {
         Graph tree = new Graph();
 
         boolean pathFound = false;
