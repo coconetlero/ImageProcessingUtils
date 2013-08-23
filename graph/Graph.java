@@ -143,14 +143,15 @@ public class Graph {
     }
     
     /**
-     * Return a reference into graph for the given Edge
+     * Return a reference into graph for the edge with geiven source and target 
+     * vertex.
      * @param edge
      * @return the Edge if the graph contains the Edge or null in other case.
      */
-    public Edge getEdge(Edge edge) {
-        ArrayList<Edge> edges = graph.get(edge.getSource());
+    public Edge getEdge(Vertex source, Vertex target) {
+        ArrayList<Edge> edges = graph.get(source);
         for (Edge e : edges) {
-            if(e.equals(edge)) {
+            if(e.getSource().equals(source) && e.getTarget().equals(target)) {
                 return e;
             }                
         }        
