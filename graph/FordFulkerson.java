@@ -2,6 +2,7 @@ package graph;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.Set;
 import java.util.Stack;
 
 /**
@@ -38,7 +39,7 @@ public class FordFulkerson {
     public ArrayList<Vertex> minCut() {
         Edge[] path = findPath(source, target);
 
-        while (path != null) {
+        while (path != null && path[0].getTarget().equals(target)) {
             // find the minimum edge weight
             float weight = Float.MAX_VALUE;
             for (int i = 0; i < path.length; i++) {
@@ -50,17 +51,35 @@ public class FordFulkerson {
 
             // Subtracting the minimum weight and create the complemental edges
             for (int i = 0; i < path.length; i++) {
-                Edge e = path[i];
-                e.setWeight(e.getWeight() - weight);
-                graph.addEdge(new Edge(e.getTarget(), e.getSource(), weight));
+                Edge edge = path[i];
+                edge.setWeight(edge.getWeight() - weight);
 
-                System.out.println(graph);
-                System.out.println("---------------------------------------------------");
+                Edge residualEdge = graph.getEdge(edge.getTarget(), edge.getSource());
+                if (residualEdge == null) {
+                    graph.addEdge(new Edge(edge.getTarget(), edge.getSource(), weight));
+                } else {
+                    residualEdge.setWeight(residualEdge.getWeight() + weight);
+                }
             }
+
+            System.out.println(graph);
+            System.out.println("---------------------------------------------------");
+
+            graph.setUnvisitedGraph();
             path = findPath(source, target);
         }
 
-        return null;
+        ArrayList<Vertex> mincut = new ArrayList<Vertex>();
+        for (int i = 0; i < path.length; i++) {
+            Vertex v = path[i].getTarget();
+            mincut.add(v);
+            System.out.println(v);
+        }
+        Vertex v = path[path.length - 1].getSource();
+        mincut.add(v);
+        System.out.println(v);
+
+        return mincut;
     }
 
     /**
@@ -89,7 +108,7 @@ public class FordFulkerson {
             // if v has an unvisited neighbour w 
             for (Edge edge : graph.getEdges(v)) {
                 Vertex w = edge.getTarget();
-                if (w.equals(target)) {
+                if (w.equals(target) && (edge.getWeight() > 0)) {
                     w.setVisited(true);
                     w.setParent(v);
                     E.add(edge);
@@ -97,49 +116,64 @@ public class FordFulkerson {
                     tree.addVertex(w);
                     pathFound = true;
                     break;
-                }
-                else if (!w.isVisited() && (edge.getWeight() > 0)) {
+                } else if (!w.isVisited() && (edge.getWeight() > 0)) {
                     w.setVisited(true);
                     w.setParent(v);
                     E.add(edge);
                     S.push(w);
                 }
             }
-            tree.addConnectedVertex(v, E);
+            if (!pathFound) {
+                tree.addConnectedVertex(v, E);
+            }
         }
 
-        // from target retrieve the source
-        LinkedList<Vertex> sPath = new LinkedList<Vertex>();
-        sPath.add(target);
-        while (sPath.getLast().getParent() != null) {
-            sPath.add(sPath.getLast().getParent());
-        }
+        if (tree.contains(target)) {
+            // from target retrieve the source
+            LinkedList<Vertex> sPath = new LinkedList<Vertex>();
+            sPath.add(target);
+            while (sPath.getLast().getParent() != null) {
+                sPath.add(sPath.getLast().getParent());
+            }
 
-        Edge[] path = new Edge[sPath.size() - 1];
-        int i = 0;
-        while (!sPath.isEmpty()) {
-            Vertex v = sPath.removeFirst();
-            if (v.getParent() != null) {
-                ArrayList<Edge> E = tree.getEdges(v.getParent());
-                for (Edge e : E) {
-                    if (v.equals(e.getTarget())) {
-                        path[i] = e;
-                        System.out.println(e);
+            Edge[] path = new Edge[sPath.size() - 1];
+            int i = 0;
+            while (!sPath.isEmpty()) {
+                Vertex v = sPath.removeFirst();
+                if (v.getParent() != null) {
+                    ArrayList<Edge> E = tree.getEdges(v.getParent());
+                    for (Edge e : E) {
+                        if (v.equals(e.getTarget())) {
+                            path[i] = e;
+                            System.out.println(e);
+                            break;
+                        }
                     }
                 }
+                i++;
             }
-            i++;
-        }
 
 
-        System.out.println("---------------------------------------------------");
+            System.out.println("---------------------------------------------------");
 
 
-        if (path.length > 0) {
-            return path;
-        }
-        else {
-            return null;
+            if (path.length > 0) {
+                return path;
+            } else {
+                return null;
+            }
+        } else {
+            Set<Vertex> minCut = tree.getVertexes();
+            ArrayList<Edge> edges = new ArrayList<Edge>();
+            for (Vertex v : minCut) {
+                ArrayList<Edge> E = tree.getEdges(v);
+                for (Edge e : E) {
+                    edges.add(e);
+                }
+            }
+
+            Edge[] mc = new Edge[edges.size()];
+            return edges.toArray(mc);
         }
     }
 }
