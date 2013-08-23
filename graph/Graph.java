@@ -230,15 +230,16 @@ public class Graph {
                     if (w.equals(target)) {
                         w.setVisited(true);
                         w.setParent(v);
+                        E.add(edge);
+                        tree.addConnectedVertex(v, E);
                         tree.addVertex(w);
-                        tree.addEdge(new Edge(v, w));
                         pathFound = true;
                         break;
                     }
                     else if (!w.isVisited()) {
                         w.setVisited(true);
                         w.setParent(v);
-                        E.add(new Edge(v, w));
+                        E.add(edge);
                         S.push(w);
                     }
                 }
