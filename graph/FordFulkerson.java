@@ -46,7 +46,7 @@ public class FordFulkerson {
      * 
      * @return an <code>ArrayList</code> with one set of the min cut for this graph. 
      */
-    public ArrayList<Vertex> minCut() {
+    public ArrayList<Vertex> maxFlowMinCut() {
         Edge[] path = findPath(source, target);
         this.maxFlow = 0;
         
