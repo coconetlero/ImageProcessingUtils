@@ -94,14 +94,15 @@ public class Graph {
     }
 
     /**
-     * Return all vertexes contained in this graph as a <code>Set</code>
+     * Return all vertexes contained in this graph as a
+     * <code>Set</code>
      *
      * @return
      */
     public Set<Vertex> getVertexes() {
         return graph.keySet();
     }
-    
+
     /**
      * Return all vertexes contained in this graph as an Array.
      *
@@ -113,8 +114,8 @@ public class Graph {
         for (Vertex v : this.getVertexes()) {
             V[i] = v;
             i++;
-        }        
-        return V;        
+        }
+        return V;
     }
 
     /**
@@ -202,7 +203,7 @@ public class Graph {
 
     /**
      * Find a path between source and target vertexes into this graph, using the
-     * Depth-first search algoritm for traversingthe graph. This function works 
+     * Depth-first search algoritm for traversingthe graph. This function works
      * with directed or undirected no weighted graphs.
      *
      * @param source vertex
@@ -225,20 +226,20 @@ public class Graph {
                 ArrayList<Edge> E = new ArrayList<Edge>();
                 // if v has an unvisited neighbour w                
                 for (Edge edge : graph.get(v)) {
-                    Vertex tempVertex = edge.getTarget();
-                    if (tempVertex.equals(target)) {
-                        E.add(new Edge(v, tempVertex));
-                        S.push(tempVertex);
-                        tempVertex.setVisited(true);
-                        tempVertex.setParent(v);
+                    Vertex w = edge.getTarget();
+                    if (w.equals(target)) {
+                        w.setVisited(true);
+                        w.setParent(v);
+                        tree.addVertex(w);
+                        tree.addEdge(new Edge(v, w));
                         pathFound = true;
                         break;
                     }
-                    else if (!tempVertex.isVisited()) {
-                        E.add(new Edge(v, tempVertex));
-                        S.push(tempVertex);
-                        tempVertex.setVisited(true);
-                        tempVertex.setParent(v);
+                    else if (!w.isVisited()) {
+                        w.setVisited(true);
+                        w.setParent(v);
+                        E.add(new Edge(v, w));
+                        S.push(w);
                     }
                 }
                 tree.addConnectedVertex(v, E);
@@ -247,10 +248,10 @@ public class Graph {
             // from target retrieve the source
             Stack<Vertex> sPath = new Stack<Vertex>();
             sPath.push(target);
-            while (sPath.peek().getParent() != null) {                
+            while (sPath.peek().getParent() != null) {
                 sPath.push(sPath.peek().getParent());
             }
-            System.out.println(sPath);
+
             Vertex[] path = new Vertex[sPath.size()];
             return sPath.toArray(path);
         }
@@ -259,17 +260,18 @@ public class Graph {
                     + target + " does not belong to the graph");
         }
     }
-        
+
     /**
      * Test if the graph contains the given vertex.
-     * 
-     * @param vertex 
-     * @return true if the graph contians the given vertex and false in other case.
+     *
+     * @param vertex
+     * @return true if the graph contians the given vertex and false in other
+     * case.
      */
     public boolean contains(Vertex vertex) {
         return graph.containsKey(vertex);
     }
-    
+
     /**
      * Build a string representation of the adjency matrix, corresponding of
      * this graph.
