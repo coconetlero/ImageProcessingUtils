@@ -8,7 +8,7 @@ import ij.process.ImageStatistics;
  * in the image process to be binarized. All variables are been choosen acording
  * to the following paper.
  *
- * @author <a ref ="zianfanti@gmail.com"> Zian Fanti Gutierrez<a/>
+ * @author <a ref ="zianfanti@gmail.com"> Zian Fanti<a/>
  *
  * @Article{Jin Ling 2005,
  *    author =   "JIN Li-Sheng TIAN Lei WANG Rong-ben GUO Lie CHU Jiang-wei",
@@ -16,7 +16,7 @@ import ij.process.ImageStatistics;
  *                Detection under Variable Illumination",
  *    journal =  "<i>Intelligent Vehicles Symposium, 2005. Proceedings. IEEE</i>",
  *    year =     "2005",
- *    pages =    "840--844",
+ *    pages =    "840-844",
  *    keywords = "otsu image binarization",
  *    note =     "improvment of otsu algorithm"
  *  }
@@ -39,14 +39,6 @@ public class Otsu {
     private int N;
 
     
-    /**
-     * Creates a new instance of Otsu
-     * @param delta parameter for convergence. The proposed value are 0.1.
-     */
-    public Otsu(double delta) {
-        this.delta = delta;
-    }
-
     /**
      * Creates a new instance of Otsu 
      * 
@@ -78,7 +70,7 @@ public class Otsu {
     }
     
     /**
-     * Binarize this image using an Otsu method
+     * Binarize this image using this Otsu method
      * 
      * @return a new <code>ImageProcessor</code> 
      */
