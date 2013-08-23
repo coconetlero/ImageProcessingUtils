@@ -75,8 +75,8 @@ public class FordFulkerson {
                 }
             }
 
-            System.out.println(graph);
-            System.out.println("---------------------------------------------------");
+//            System.out.println(graph);
+//            System.out.println("---------------------------------------------------");
 
             graph.setUnvisitedGraph();
             path = findPath(source, target);
@@ -158,7 +158,7 @@ public class FordFulkerson {
                     for (Edge e : E) {
                         if (v.equals(e.getTarget())) {
                             path[i] = e;
-                            System.out.println(e);
+//                            System.out.println(e);
                             break;
                         }
                     }
@@ -167,7 +167,7 @@ public class FordFulkerson {
             }
 
 
-            System.out.println("---------------------------------------------------");
+//            System.out.println("---------------------------------------------------");
 
 
             if (path.length > 0) {
