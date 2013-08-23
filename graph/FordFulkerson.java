@@ -35,10 +35,34 @@ public class FordFulkerson {
      *
      * @return
      */
-//    public ArrayList<Vertex> minCut() {
-//        Edge[] path = findPath(source, target);
-//        
-//    }
+    public ArrayList<Vertex> minCut() {
+        Edge[] path = findPath(source, target);
+
+        while (path != null) {
+            // find the minimum edge weight
+            float weight = Float.MAX_VALUE;
+            for (int i = 0; i < path.length; i++) {
+                float tempWeight = path[i].getWeight();
+                if (tempWeight < weight) {
+                    weight = tempWeight;
+                }
+            }
+
+            // Subtracting the minimum weight and create the complemental edges
+            for (int i = 0; i < path.length; i++) {
+                Edge e = path[i];
+                e.setWeight(e.getWeight() - weight);
+                graph.addEdge(new Edge(e.getTarget(), e.getSource(), weight));
+
+                System.out.println(graph);
+                System.out.println("---------------------------------------------------");
+            }
+            path = findPath(source, target);
+        }
+
+        return null;
+    }
+
     /**
      * Find a path between source and target vertexes into this graph, using the
      * Depth-first search algoritm for traversingthe graph. This function works
@@ -68,7 +92,7 @@ public class FordFulkerson {
                 if (w.equals(target)) {
                     w.setVisited(true);
                     w.setParent(v);
-                    E.add(new Edge(v, w));
+                    E.add(edge);
                     tree.addConnectedVertex(v, E);
                     tree.addVertex(w);
                     pathFound = true;
@@ -77,14 +101,12 @@ public class FordFulkerson {
                 else if (!w.isVisited() && (edge.getWeight() > 0)) {
                     w.setVisited(true);
                     w.setParent(v);
-                    E.add(new Edge(v, w));
+                    E.add(edge);
                     S.push(w);
                 }
             }
             tree.addConnectedVertex(v, E);
         }
-
-        System.out.println(tree);
 
         // from target retrieve the source
         LinkedList<Vertex> sPath = new LinkedList<Vertex>();
@@ -93,7 +115,7 @@ public class FordFulkerson {
             sPath.add(sPath.getLast().getParent());
         }
 
-        Edge[] path = new Edge[sPath.size()];
+        Edge[] path = new Edge[sPath.size() - 1];
         int i = 0;
         while (!sPath.isEmpty()) {
             Vertex v = sPath.removeFirst();
@@ -108,6 +130,16 @@ public class FordFulkerson {
             }
             i++;
         }
-        return path;
+
+
+        System.out.println("---------------------------------------------------");
+
+
+        if (path.length > 0) {
+            return path;
+        }
+        else {
+            return null;
+        }
     }
 }
