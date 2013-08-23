@@ -15,9 +15,17 @@ import java.util.Stack;
  */
 public class FordFulkerson {
 
+    /** The given graph to apply this algorithm */
     private Graph graph;
+    
+    /** the source vertex for the algorithm */
     private Vertex source;
+    
+    /** the sink vertex for the algorithm */
     private Vertex target;
+    
+    /** the maximun flow permited for given graph */
+    private float maxFlow;
 
     /**
      * Basic constructor to obtain the max flow or min cut on a graph
@@ -33,12 +41,15 @@ public class FordFulkerson {
     }
 
     /**
-     *
-     * @return
+     * Implements the Min Cut - Max Flow Ford-Fulkerson algorithm for graphs.
+     * This function sets the maxFlow local field
+     * 
+     * @return an <code>ArrayList</code> with one set of the min cut for this graph. 
      */
     public ArrayList<Vertex> minCut() {
         Edge[] path = findPath(source, target);
-
+        this.maxFlow = 0;
+        
         while (path != null && path[0].getTarget().equals(target)) {
             // find the minimum edge weight
             float weight = Float.MAX_VALUE;
@@ -49,6 +60,8 @@ public class FordFulkerson {
                 }
             }
 
+            maxFlow += weight;
+            
             // Subtracting the minimum weight and create the complemental edges
             for (int i = 0; i < path.length; i++) {
                 Edge edge = path[i];
@@ -175,5 +188,12 @@ public class FordFulkerson {
             Edge[] mc = new Edge[edges.size()];
             return edges.toArray(mc);
         }
+    }
+
+    /**
+     * @return the maxFlow
+     */
+    public float getMaxFlow() {
+        return maxFlow;
     }
 }
