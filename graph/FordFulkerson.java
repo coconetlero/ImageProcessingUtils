@@ -62,7 +62,7 @@ public class FordFulkerson {
 
             maxFlow += weight;
             
-            // Subtracting the minimum weight and create the complemental edges
+            // Subtracting the minimum weight and create the residual edges
             for (int i = 0; i < path.length; i++) {
                 Edge edge = path[i];
                 edge.setWeight(edge.getWeight() - weight);
@@ -75,8 +75,6 @@ public class FordFulkerson {
                 }
             }
 
-//            System.out.println(graph);
-//            System.out.println("---------------------------------------------------");
 
             graph.setUnvisitedGraph();
             path = findPath(source, target);
@@ -86,11 +84,11 @@ public class FordFulkerson {
         for (int i = 0; i < path.length; i++) {
             Vertex v = path[i].getTarget();
             mincut.add(v);
-            System.out.println(v);
+//            System.out.println(v);
         }
         Vertex v = path[path.length - 1].getSource();
         mincut.add(v);
-        System.out.println(v);
+//        System.out.println(v);
 
         return mincut;
     }
