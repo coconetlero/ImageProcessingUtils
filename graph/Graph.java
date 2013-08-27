@@ -163,7 +163,7 @@ public class Graph {
      *
      * @return
      */
-    public int numOfVertexes() {
+    public int size() {
         return graph.size();
     }
 
