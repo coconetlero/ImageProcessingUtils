@@ -1,5 +1,6 @@
 package graph;
 
+import com.sun.xml.internal.bind.util.Which;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Stack;
@@ -9,17 +10,13 @@ import java.util.Stack;
  *
  * @author <a ref ="zianfanti@gmail.com"> Zian Fanti<a/>
  *
- * @Article{Boykov and Kolmogorov 2004,
- * author = "Yuri Boykov and Vladimir Kolmogorov",
- * title = "An Experimental Comparison of Min-Cut/Max-Flow Algorithms for
- * Energy Minimization in Vision",
- * journal = "<i>IEEE TRANSACTIONS ON PATTERN ANALYSIS AND MACHINE
- * INTELLIGENCE</i>",
- * year = "2004",
- * pages = "1124-1137",
- * keywords = "Energy minimization, graph algorithms, minimum cut, maximum flow,
- * image restoration, segmentation, stereo, multicamera scene reconstruction",
- * }
+ * @Article{Boykov and Kolmogorov 2004, author = "Yuri Boykov and Vladimir
+ * Kolmogorov", title = "An Experimental Comparison of Min-Cut/Max-Flow
+ * Algorithms for Energy Minimization in Vision", journal = "<i>IEEE
+ * TRANSACTIONS ON PATTERN ANALYSIS AND MACHINE INTELLIGENCE</i>", year =
+ * "2004", pages = "1124-1137", keywords = "Energy minimization, graph
+ * algorithms, minimum cut, maximum flow, image restoration, segmentation,
+ * stereo, multicamera scene reconstruction", }
  */
 public class BoykovKolmogorov {
 
@@ -27,42 +24,34 @@ public class BoykovKolmogorov {
      * The given graph to apply this algorithm
      */
     private Graph graph;
-
     /**
      * the source vertex for the algorithm
      */
     private Vertex source;
-
     /**
      * the sink vertex for the algorithm
      */
     private Vertex target;
-
     /**
      * The source tree
      */
     private Graph S;
-
     /**
      * The target tree
      */
     private Graph T;
-
     /**
      *
      */
     private LinkedList<Vertex> active;
-
     /**
      *
      */
     private LinkedList<Vertex> orphans;
-
     /**
      * Flag indicating the affiliation of each vertex, for vertexes in S tree
      */
     private boolean[] S_tree;
-
     /**
      *
      */
@@ -78,6 +67,7 @@ public class BoykovKolmogorov {
         this.graph = graph;
         this.source = source;
         this.target = target;
+
 
         this.S = new Graph();
         this.T = new Graph();
@@ -100,14 +90,21 @@ public class BoykovKolmogorov {
      *
      * @return
      */
-//    public ArrayList<Vertex> minCut() {
-//    }
+    public ArrayList<Vertex> minCut(int width) {
+        while (true) {
+            Edge[] path = grow();
+            augment(path);
+            adopt(width);
+            return null;
+        }
+    }
+
     /**
      * Active nodes acquire new children from a set of free nodes.
      *
      *
      * @return an <code>ArrayList</code> containing the path between source and
-     *         target vertexes as a sequence.
+     * target vertexes as a sequence.
      */
     public Edge[] grow() {
         while (!active.isEmpty()) {
@@ -149,7 +146,7 @@ public class BoykovKolmogorov {
      *
      * @param path
      */
-    public void augmentation(Edge[] path) {
+    public void augment(Edge[] path) {
         // find the bottleneck capacity delta on path P
         float delta = Float.MAX_VALUE;
         for (int i = 0; i < path.length; i++) {
@@ -167,7 +164,8 @@ public class BoykovKolmogorov {
             Edge residualEdge = graph.getEdge(edge.getTarget(), edge.getSource());
             if (residualEdge == null) {
                 graph.addEdge(new Edge(edge.getTarget(), edge.getSource(), delta));
-            } else {
+            }
+            else {
                 residualEdge.setWeight(residualEdge.getWeight() + delta);
             }
 
@@ -192,22 +190,31 @@ public class BoykovKolmogorov {
      * tree; in case of success, p remains in the tree but with a new parent;
      * otherwise, it becomes a free node and all its children are added to O.
      */
-    public void adoption() {
-        while(!orphans.isEmpty()) {
-            Vertex p = orphans.pop();  
+    private void adopt(int width) {
+        while (!orphans.isEmpty()) {
+            Vertex p = orphans.pop();
             
+            // process p
+            // a new valid parent for p
+            int[] neighbours = this.getNeighbours(p.getName(), width);
+            for (int i = 0; i < neighbours.length; i++) {
+                if (neighbours[i] > 0) {
+                Edge e = graph.getEdge(new Vertex(neighbours[i]), p);
+                if ((tree(e.getSource()) == tree(e.getTarget())) && 
+                        (e.getWeight() > 0)) {
+                    
+                }
+            }
         }
     }
 
     /**
-     * Test if the given vertex belongs to S or T trees, or if vertex is
-     * orphan.
+     * Test if the given vertex belongs to S or T trees, or if vertex is orphan.
      *
      * @param v a vertex in question
      *
-     * @return 0 if vertex is orphan
-     *         1 if vertex belongs to S tree
-     *         2 if vertex belongs to T tree
+     * @return 0 if vertex is orphan 1 if vertex belongs to S tree 2 if vertex
+     * belongs to T tree
      */
     private int tree(Vertex v) {
         int name = v.getName();
@@ -219,10 +226,57 @@ public class BoykovKolmogorov {
         }
         if (T_tree[name]) {
             return 2;
-        } else {
+        }
+        else {
             return -1;
         }
     }
+
+    /**
+     * Find the four neighbours of the given pixel index.
+     *
+     * @param idx
+     * @return an array of 4 neighbours of the given index pixel.
+     */
+    private int[] getNeighbours(int idx, int width) {
+        idx--;
+        int x = idx % width;
+        int y = idx / width;
+
+        int[] neighbours = new int[4];
+
+        int n_idx = (y * width) + (x - 1);
+        if ((n_idx > 0 && n_idx < graph.size() - 1)) {
+            neighbours[0] = ++n_idx;
+        }
+        else {
+            neighbours[0] = -1;
+        }
+        n_idx = ((y - 1) * width) + x;
+        if ((n_idx > 0 && n_idx < graph.size() - 1)) {
+            neighbours[1] = ++n_idx;
+        }
+        else {
+            neighbours[1] = -1;
+        }
+        n_idx = (y * width) + (x + 1);
+        if ((n_idx > 0 && n_idx < graph.size() - 1)) {
+            neighbours[2] = ++n_idx;
+        }
+        else {
+            neighbours[2] = -1;
+        }
+        n_idx = ((y + 1) * width) + x;
+        if ((n_idx > 0 && n_idx < graph.size() - 1)) {
+            neighbours[3] = ++n_idx;
+        }
+        else {
+            neighbours[3] = -1;
+        }
+
+        return neighbours;
+    }
+    
     /**
      *
      * @param path
