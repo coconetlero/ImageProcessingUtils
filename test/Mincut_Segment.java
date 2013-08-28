@@ -2,6 +2,7 @@ package test;
 
 
 
+import graph.BoykovKolmogorov;
 import graph.Edge;
 import graph.FordFulkerson;
 import graph.Graph;
@@ -131,6 +132,8 @@ public class Mincut_Segment implements PlugInFilter {
                         -(((bkgMean - pv) * (bkgMean - pv))) / (2 * bkgSTDV * bkgSTDV));
                 vEdges.add(new Edge(V[v_idx], sink, weight_vt));
 
+
+                
                 // add vertex to graph
                 graph.addConnectedVertex(V[v_idx], vEdges);
             }
@@ -140,8 +143,11 @@ public class Mincut_Segment implements PlugInFilter {
 
         System.out.println("end image to graph");
 
-        FordFulkerson ff = new FordFulkerson(graph, source, sink);
-        ArrayList<Vertex> mincut = ff.maxFlowMinCut();
+//        FordFulkerson ff = new FordFulkerson(graph, source, sink);
+//        ArrayList<Vertex> mincut = ff.maxFlowMinCut();
+        
+        BoykovKolmogorov BK = new BoykovKolmogorov(graph, source, sink);
+        ArrayList<Vertex> mincut = BK.minCut(width);
 
         byte[] segmented = new byte[pixels.length];
         for (Vertex v : mincut) {
