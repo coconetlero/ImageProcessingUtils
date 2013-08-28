@@ -93,6 +93,15 @@ public class BoykovKolmogorov {
     public ArrayList<Vertex> minCut(int width) {
         while (true) {
             Edge[] path = grow();
+            if (path.length == 0) {
+                ArrayList<Vertex> mincut = new ArrayList<Vertex>(S.size());
+                for (Vertex v : S.getVertexes()) {
+                    if (!v.equals(source)) {
+                        mincut.add(v);
+                    }
+                }
+                return mincut;
+            }
             augment(path);
             adopt(width);
             return null;
@@ -129,12 +138,20 @@ public class BoykovKolmogorov {
                         active.add(q);
                     }
                     if ((this.tree(q) != 0) && (this.tree(q) != this.tree(p))) {
-                        // return P = PATH_(s->t)                        
-                        Stack<Vertex> path = new Stack<Vertex>();
-                        path.push(target);
-                        while (path.peek().getParent() != null) {
-                            path.push(path.peek().getParent());
+                        // return P = PATH_(s->t)                               
+                        ArrayList<Edge> path = new ArrayList<Edge>();
+                        if (target.getParent() == null) {
+                            return null;
                         }
+                        Vertex current = target;
+                        Vertex parent = current.getParent();
+                        while (parent != null) {
+                            Edge e = graph.getEdge(parent, current);
+                            path.add(e);
+                            current = parent;
+                        }         
+                        Edge[] arratPath = new Edge[path.size()];
+                        return path.toArray(arratPath);
                     }
                 }
             }
