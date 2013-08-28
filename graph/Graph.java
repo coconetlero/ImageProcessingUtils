@@ -110,6 +110,23 @@ public class Graph {
     public Set<Vertex> getVertexes() {
         return graph.keySet();
     }
+    
+    /**
+     * Find the Vertex in the graph with the given name
+     * <code>Set</code>
+     *
+     * @return the Vertex contained in the graph with the given name, or null if 
+     * not exisit the desired vertex.
+     */
+    public Vertex getVertex(int name) {
+        Set<Vertex> V = graph.keySet();
+        for (Vertex v : V) {
+            if (v.getName() == name) {
+                return v;
+            }
+        }
+        return null;
+    }
 
     /**
      * Return all vertexes contained in this graph as an Array.
