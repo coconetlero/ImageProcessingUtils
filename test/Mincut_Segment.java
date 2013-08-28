@@ -81,7 +81,8 @@ public class Mincut_Segment implements PlugInFilter {
         for (int i = 0; i < pixels.length; i++) {
             Vertex v = new Vertex(i + 1);
             V[i] = v;
-            float weight = (float) Math.exp(-(((objMean - pixels[i]) * (objMean - pixels[i])))
+            double p = (double)(pixels[i] & 0xff);
+            float weight = (float) Math.exp(-(((objMean - p) * (objMean - p)))
                     / (2 * objSTDV * objSTDV));
             sourceEdges.add(new Edge(source, v, weight));
         }
@@ -92,42 +93,42 @@ public class Mincut_Segment implements PlugInFilter {
         for (int y = 0; y < heigth; y++) {
             for (int x = 0; x < width; x++) {
                 int v_idx = (y * width) + x;
+                double pv = (double)(pixels[v_idx] & 0xff);
                 ArrayList<Edge> vEdges = new ArrayList<Edge>(5);
 
                 // add edges from vertex v to it's neighbours vertex w 
                 if (x < width - 1) {
-                    int w_idx = (y * width) + (x + 1);
+                    int w_idx = (y * width) + (x + 1);                    
+                    double pw = (double)(pixels[w_idx] & 0xff);
                     float weight_vw = (float) Math.exp(
-                            -(((pixels[v_idx] - pixels[w_idx]) * (pixels[v_idx] - pixels[w_idx])))
-                            / (2 * imSTDV * imSTDV));
+                            -(((pv - pw) * (pv - pw))) / (2 * imSTDV * imSTDV));
                     vEdges.add(new Edge(V[v_idx], V[w_idx], weight_vw));
                 }
                 if (x > 0) {
                     int w_idx = (y * width) + (x - 1);
+                    double pw = (double)(pixels[w_idx] & 0xff);
                     float weight_vw = (float) Math.exp(
-                            -(((pixels[v_idx] - pixels[w_idx]) * (pixels[v_idx] - pixels[w_idx])))
-                            / (2 * imSTDV * imSTDV));
+                            -(((pv - pw) * (pv - pw))) / (2 * imSTDV * imSTDV));
                     vEdges.add(new Edge(V[v_idx], V[w_idx], weight_vw));
                 }
                 if (y < heigth - 1) {
                     int w_idx = ((y + 1) * width) + x;
+                    double pw = (double)(pixels[w_idx] & 0xff);
                     float weight_vw = (float) Math.exp(
-                            -(((pixels[v_idx] - pixels[w_idx]) * (pixels[v_idx] - pixels[w_idx])))
-                            / (2 * imSTDV * imSTDV));
+                            -(((pv - pw) * (pv - pw))) / (2 * imSTDV * imSTDV));
                     vEdges.add(new Edge(V[v_idx], V[w_idx], weight_vw));
                 }
                 if (y > 0) {
                     int w_idx = ((y - 1) * width) + x;
+                    double pw = (double)(pixels[w_idx] & 0xff);
                     float weight_vw = (float) Math.exp(
-                            -(((pixels[v_idx] - pixels[w_idx]) * (pixels[v_idx] - pixels[w_idx])))
-                            / (2 * imSTDV * imSTDV));
+                            -(((pv - pw) * (pv - pw))) / (2 * imSTDV * imSTDV));
                     vEdges.add(new Edge(V[v_idx], V[w_idx], weight_vw));
                 }
 
                 // add edge from vertex v to sink
                 float weight_vt = (float) Math.exp(
-                        -(((bkgMean - pixels[v_idx]) * (bkgMean - pixels[v_idx])))
-                        / (2 * bkgSTDV * bkgSTDV));
+                        -(((bkgMean - pv) * (bkgMean - pv))) / (2 * bkgSTDV * bkgSTDV));
                 vEdges.add(new Edge(V[v_idx], sink, weight_vt));
 
                 // add vertex to graph
