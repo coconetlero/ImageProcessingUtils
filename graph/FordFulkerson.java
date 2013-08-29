@@ -15,16 +15,21 @@ import java.util.Stack;
  */
 public class FordFulkerson {
 
-    /** The given graph to apply this algorithm */
+    /**
+     * The given graph to apply this algorithm
+     */
     private Graph graph;
-    
-    /** the source vertex for the algorithm */
+    /**
+     * the source vertex for the algorithm
+     */
     private Vertex source;
-    
-    /** the sink vertex for the algorithm */
+    /**
+     * the sink vertex for the algorithm
+     */
     private Vertex target;
-    
-    /** the maximun flow permited for given graph */
+    /**
+     * the maximun flow permited for given graph
+     */
     private float maxFlow;
 
     /**
@@ -43,13 +48,14 @@ public class FordFulkerson {
     /**
      * Implements the Min Cut - Max Flow Ford-Fulkerson algorithm for graphs.
      * This function sets the maxFlow local field
-     * 
-     * @return an <code>ArrayList</code> with one set of the min cut for this graph. 
+     *
+     * @return an <code>ArrayList</code> with one set of the min cut for this
+     * graph.
      */
     public ArrayList<Vertex> maxFlowMinCut() {
         Edge[] path = findPath(source, target);
         this.maxFlow = 0;
-        
+
         while (path != null && path[0].getTarget().equals(target)) {
             // find the minimum edge weight
             float weight = Float.MAX_VALUE;
@@ -61,7 +67,7 @@ public class FordFulkerson {
             }
 
             maxFlow += weight;
-            
+
             // Subtracting the minimum weight and create the residual edges
             for (int i = 0; i < path.length; i++) {
                 Edge edge = path[i];
@@ -70,7 +76,8 @@ public class FordFulkerson {
                 Edge residualEdge = graph.getEdge(edge.getTarget(), edge.getSource());
                 if (residualEdge == null) {
                     graph.addEdge(new Edge(edge.getTarget(), edge.getSource(), weight));
-                } else {
+                }
+                else {
                     residualEdge.setWeight(residualEdge.getWeight() + weight);
                 }
             }
@@ -127,7 +134,8 @@ public class FordFulkerson {
                     tree.addVertex(w);
                     pathFound = true;
                     break;
-                } else if (!w.isVisited() && (edge.getWeight() > 0)) {
+                }
+                else if (!w.isVisited() && (edge.getWeight() > 0)) {
                     w.setVisited(true);
                     w.setParent(v);
                     E.add(edge);
@@ -140,40 +148,27 @@ public class FordFulkerson {
         }
 
         if (tree.contains(target)) {
-            // from target retrieve the source
-            LinkedList<Vertex> sPath = new LinkedList<Vertex>();
-            sPath.add(target);
-            while (sPath.getLast().getParent() != null) {
-                sPath.add(sPath.getLast().getParent());
+            ArrayList<Edge> sPath = new ArrayList<Edge>();
+            Vertex current = target;
+            Vertex parent = current.getParent();
+            while (parent != null) {
+                Edge e = tree.getEdge(parent, current);
+                sPath.add(e);
+                current = parent;
+                parent = current.getParent();
             }
-
-            Edge[] path = new Edge[sPath.size() - 1];
-            int i = 0;
-            while (!sPath.isEmpty()) {
-                Vertex v = sPath.removeFirst();
-                if (v.getParent() != null) {
-                    ArrayList<Edge> E = tree.getEdges(v.getParent());
-                    for (Edge e : E) {
-                        if (v.equals(e.getTarget())) {
-                            path[i] = e;
-//                            System.out.println(e);
-                            break;
-                        }
-                    }
-                }
-                i++;
-            }
-
-
-//            System.out.println("---------------------------------------------------");
-
+            
+            Edge[] path = new Edge[sPath.size()];
+            sPath.toArray(path);
 
             if (path.length > 0) {
                 return path;
-            } else {
+            }
+            else {
                 return null;
             }
-        } else {
+        }
+        else {
             Set<Vertex> minCut = tree.getVertexes();
             ArrayList<Edge> edges = new ArrayList<Edge>();
             for (Vertex v : minCut) {
