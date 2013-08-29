@@ -92,8 +92,8 @@ public class BoykovKolmogorov {
      */
     public ArrayList<Vertex> minCut(int width) {
         while (true) {
-            Edge[] path = grow();
-            if (path.length == 0) {
+            Edge[] path = grow();            
+            if (path != null) {
                 ArrayList<Vertex> mincut = new ArrayList<Vertex>(S.size());
                 for (Vertex v : S.getVertexes()) {
                     if (!v.equals(source)) {
@@ -147,6 +147,7 @@ public class BoykovKolmogorov {
                             Edge e = graph.getEdge(parent, current);
                             sPath.push(e);
                             current = parent;
+                            parent = current.getParent();
                         }         
                         
                         ArrayList<Edge> tPath = new ArrayList<Edge>();
@@ -157,6 +158,7 @@ public class BoykovKolmogorov {
                             Edge e = graph.getEdge(parent, current);
                             tPath.add(e);
                             current = parent;
+                            parent = current.getParent();
                         }         
                         
                         // concatenate the the paths s->p and q->t
