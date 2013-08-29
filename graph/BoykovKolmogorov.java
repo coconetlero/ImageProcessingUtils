@@ -138,20 +138,42 @@ public class BoykovKolmogorov {
                         active.add(q);
                     }
                     if ((this.tree(q) != 0) && (this.tree(q) != this.tree(p))) {
-                        // return P = PATH_(s->t)                               
-                        ArrayList<Edge> path = new ArrayList<Edge>();
-                        if (target.getParent() == null) {
-                            return null;
-                        }
-                        Vertex current = target;
+                        // return P = PATH_(s->t)                                                       
+                        Stack<Edge> sPath = new Stack<Edge>();
+                        // find path from p to s
+                        Vertex current = p;
                         Vertex parent = current.getParent();
                         while (parent != null) {
                             Edge e = graph.getEdge(parent, current);
-                            path.add(e);
+                            sPath.push(e);
                             current = parent;
                         }         
-                        Edge[] arratPath = new Edge[path.size()];
-                        return path.toArray(arratPath);
+                        
+                        ArrayList<Edge> tPath = new ArrayList<Edge>();
+                        // find path from q to t 
+                        current = q;
+                        parent = current.getParent();
+                        while (parent != null) {
+                            Edge e = graph.getEdge(parent, current);
+                            tPath.add(e);
+                            current = parent;
+                        }         
+                        
+                        // concatenate the the paths s->p and q->t
+                        Edge[] path = new Edge[sPath.size() + tPath.size() + 1];
+                        int idx = 0;
+                        while(!sPath.empty()) {
+                            path[idx] = sPath.pop();
+                            idx++;
+                        }
+                        path[idx] = graph.getEdge(p, q);
+                        idx++;
+                        for (Edge e : tPath) {
+                            path[idx] = e;
+                            idx++;
+                        }
+                                                
+                        return path;
                     }
                 }
             }
