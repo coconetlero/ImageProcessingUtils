@@ -92,8 +92,8 @@ public class BoykovKolmogorov {
      */
     public ArrayList<Vertex> minCut(int width) {
         while (true) {
-            Edge[] path = grow();            
-            if (path != null) {
+            Edge[] path = grow();         
+            if (path == null) {
                 ArrayList<Vertex> mincut = new ArrayList<Vertex>(S.size());
                 for (Vertex v : S.getVertexes()) {
                     if (!v.equals(source)) {
@@ -104,7 +104,6 @@ public class BoykovKolmogorov {
             }
             augment(path);
             adopt(width);
-            return null;
         }
     }
 
@@ -117,7 +116,7 @@ public class BoykovKolmogorov {
      */
     public Edge[] grow() {
         while (!active.isEmpty()) {
-            Vertex p = active.pop();
+            Vertex p = active.pop();           
             ArrayList<Edge> currentEdges = graph.getEdges(p);
             for (Edge edge : currentEdges) {
                 // if tree_cap(p->q) > 0
@@ -128,10 +127,12 @@ public class BoykovKolmogorov {
                         switch (this.tree(p)) {
                             case 1:
                                 S.addVertex(q);
+                                S.addEdge(graph.getEdge(p, q));
                                 S_tree[q.getName()] = true;
                                 break;
                             case 2:
                                 T.addVertex(q);
+                                S.addEdge(graph.getEdge(p, q));
                                 T_tree[q.getName()] = true;
                                 break;
                         }
@@ -140,6 +141,7 @@ public class BoykovKolmogorov {
                     if ((this.tree(q) != 0) && (this.tree(q) != this.tree(p))) {
                         // return P = PATH_(s->t)                                                       
                         Stack<Edge> sPath = new Stack<Edge>();
+                        
                         // find path from p to s
                         Vertex current = p;
                         Vertex parent = current.getParent();
@@ -173,8 +175,7 @@ public class BoykovKolmogorov {
                         for (Edge e : tPath) {
                             path[idx] = e;
                             idx++;
-                        }
-                                                
+                        }                                               
                         return path;
                     }
                 }
@@ -202,17 +203,23 @@ public class BoykovKolmogorov {
             Edge edge = path[i];
             edge.setWeight(edge.getWeight() - delta);
 
-//            Edge residualEdge = graph.getEdge(edge.getTarget(), edge.getSource());
-//            if (residualEdge == null) {
-//                graph.addEdge(new Edge(edge.getTarget(), edge.getSource(), delta));
-//            }
-//            else {
-//                residualEdge.setWeight(residualEdge.getWeight() + delta);
-//            }
+            Edge residualEdge = graph.getEdge(edge.getTarget(), edge.getSource());
+            if (residualEdge == null) {
+                graph.addEdge(new Edge(edge.getTarget(), edge.getSource(), delta));
+            }
+            else {
+                residualEdge.setWeight(residualEdge.getWeight() + delta);
+            }
 
-            if (edge.getWeight() == 0) {
+            if (edge.getWeight() <= 0) {
                 Vertex p = edge.getSource();
                 Vertex q = edge.getTarget();
+                
+//                System.out.print(p.getName() + " ");
+                if (p.getName() == 5000) {
+                    System.out.println(p.getName());
+                }
+                
                 if (tree(p) == 1 && tree(q) == 1) {
                     p.setParent(null);
                     orphans.add(q);
