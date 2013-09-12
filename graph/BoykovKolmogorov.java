@@ -23,38 +23,47 @@ public class BoykovKolmogorov {
      * The given graph to apply this algorithm
      */
     private Graph graph;
+
     /**
      * the source vertex for the algorithm
      */
     private Vertex source;
+
     /**
      * the sink vertex for the algorithm
      */
     private Vertex target;
+
     /**
      * The source tree
      */
     private Graph S;
+
     /**
      * The target tree
      */
     private Graph T;
+
     /**
      *
      */
     private LinkedList<Vertex> active;
+
     /**
      *
      */
     private LinkedList<Vertex> orphans;
+
     /**
      * Flag indicating the affiliation of each vertex, for vertexes in S tree
      */
     private boolean[] S_tree;
+
     /**
      *
      */
     private boolean[] T_tree;
+
     int idxxx = 0;
 
     /**
@@ -112,7 +121,7 @@ public class BoykovKolmogorov {
      *
      *
      * @return an <code>ArrayList</code> containing the path between source and
-     * target vertexes as a sequence.
+     *         target vertexes as a sequence.
      */
     public Edge[] grow() {
         while (!active.isEmpty()) {
@@ -208,8 +217,7 @@ public class BoykovKolmogorov {
             if (residualEdge == null) {
                 residualEdge = new Edge(edge.getTarget(), edge.getSource(), delta);
                 graph.addEdge(residualEdge);
-            }
-            else {
+            } else {
                 residualEdge.setWeight(residualEdge.getWeight() + delta);
             }
 
@@ -220,16 +228,13 @@ public class BoykovKolmogorov {
                 if (tree(p) == 1 && tree(q) == 1) {
                     p.setParent(null);
                     orphans.add(q);
-                    System.out.print(".");
                 }
                 if (tree(p) == 2 && tree(q) == 2) {
                     p.setParent(null);
                     orphans.add(p);
-                    System.out.print("-");
                 }
             }
         }
-        System.out.println("_____________" + idxxx++);
     }
 
     /**
@@ -246,7 +251,6 @@ public class BoykovKolmogorov {
             // find a new valid parent for p
 
             // fisrt check if source or sink can be a valid parent
-
             switch (this.tree(p)) {
                 case 1:
                     Edge es = graph.getEdge(source, p);
@@ -309,7 +313,7 @@ public class BoykovKolmogorov {
      * @param v a vertex in question
      *
      * @return 0 if vertex is orphan. 1 if vertex belongs to S tree. 2 if vertex
-     * belongs to T tree.
+     *         belongs to T tree.
      */
     private int tree(Vertex v) {
         int name = v.getName();
@@ -321,8 +325,7 @@ public class BoykovKolmogorov {
         }
         if (T_tree[name]) {
             return 2;
-        }
-        else {
+        } else {
             return -1;
         }
     }
@@ -332,8 +335,9 @@ public class BoykovKolmogorov {
      * <code>Vertex</code> has a conected path to the source or sink vertex;
      *
      * @param q current Vertex
+     *
      * @return true if valid path to the source or sink vertex was found, or
-     * false in other case
+     *         false in other case
      */
     private boolean validOrigin(Vertex q) {
         Vertex parent = q.getParent();
@@ -350,6 +354,7 @@ public class BoykovKolmogorov {
      * Find the four neighbours of the given pixel index.
      *
      * @param idx
+     *
      * @return an array of 4 neighbours of the given index pixel.
      */
     private int[] getNeighbours(int idx, int width) {
@@ -359,65 +364,31 @@ public class BoykovKolmogorov {
 
         int[] neighbours = new int[4];
 
-        int n_idx = (y * width) + (x - 1);
-        if ((x - 1 < 0) || (x + 1 > width) || ((y - 1) < 0) || n_idx < (graph.size() - 1)) {
+        if ((x - 1) < 0) {
             neighbours[0] = -1;
+        } else {
+            neighbours[0] = ((y * width) + (x - 1)) + 1;
         }
-        else {
-            neighbours[0] = ++n_idx;
-        }
-        
-        n_idx = ((y - 1) * width) + x;
-        if ((x - 1 < 0) || (y - 1 < 0)) {
-            neighbours[0] = -1;
-        }
-        else {
-            neighbours[0] = ++n_idx;
-        }
-        
-        n_idx = (y * width) + (x + 1);
-        if ((x - 1 < 0) || (y - 1 < 0)) {
-            neighbours[0] = -1;
-        }
-        else {
-            neighbours[0] = ++n_idx;
-        }
-        
-        n_idx = ((y + 1) * width) + x;
-        if ((x - 1 < 0) || (y - 1 < 0)) {
-            neighbours[0] = -1;
-        }
-        else {
-            neighbours[0] = ++n_idx;
-        }
-//        if ((n_idx > 0 && n_idx < graph.size() - 1)) {
-//            neighbours[0] = ++n_idx;
-//        }
-//        else {
-//        }
-//
-//        n_idx = ((y - 1) * width) + x;
-//        if ((n_idx > 0 && n_idx < graph.size() - 1)) {
-//            neighbours[1] = ++n_idx;
-//        }
-//        else {
-//            neighbours[1] = -1;
-//        }
-//        n_idx = (y * width) + (x + 1);
-//        if ((n_idx > 0 && n_idx < graph.size() - 1)) {
-//            neighbours[2] = ++n_idx;
-//        }
-//        else {
-//            neighbours[2] = -1;
-//        }
-//        n_idx = ((y + 1) * width) + x;
-//        if ((n_idx > 0 && n_idx < graph.size() - 1)) {
-//            neighbours[3] = ++n_idx;
-//        }
-//        else {
-//            neighbours[3] = -1;
-//        }
 
+        if ((y - 1) < 0) {
+            neighbours[1] = -1;
+        } else {
+            neighbours[1] = (((y - 1) * width) + x) + 1;
+        }
+
+        if ((x + 1) == width) {
+            neighbours[2] = -1;
+        } else {
+            neighbours[2] = ((y * width) + (x + 1)) + 1;
+        }
+
+        int n_idx = ((y + 1) * width) + x;
+        if (n_idx >= (graph.size() - 2)) {
+            neighbours[3] = - 1;
+        } else {
+            neighbours[3] = ++n_idx;
+        }
+        
         return neighbours;
     }
     /**
