@@ -244,6 +244,27 @@ public class BoykovKolmogorov {
 
             // process p
             // find a new valid parent for p
+
+            // fisrt check if source or sink can be a valid parent
+
+            switch (this.tree(p)) {
+                case 1:
+                    Edge es = graph.getEdge(source, p);
+                    if (es.getWeight() > 0) {
+                        p.setParent(source);
+                        return;
+                    }
+                    break;
+                case 2:
+                    Edge et = graph.getEdge(target, p);
+                    if (et.getWeight() > 0) {
+                        p.setParent(target);
+                        return;
+                    }
+                    break;
+            }
+
+            // find a valid parent with vertex neighbours 
             int[] neighbours = this.getNeighbours(p.getName(), width);
             for (int i = 0; i < neighbours.length; i++) {
                 if (neighbours[i] > 0) {
@@ -255,7 +276,7 @@ public class BoykovKolmogorov {
                     }
                 }
             }
-            
+
             // If p does not find a valid parent, then p becomes a free node
             ArrayList<Edge> edges = (tree(p) == 1) ? S.getEdges(p) : T.getEdges(p);
             for (Edge e : edges) {
@@ -339,33 +360,63 @@ public class BoykovKolmogorov {
         int[] neighbours = new int[4];
 
         int n_idx = (y * width) + (x - 1);
-        if ((n_idx > 0 && n_idx < graph.size() - 1)) {
-            neighbours[0] = ++n_idx;
-        }
-        else {
+        if ((x - 1 < 0) || (x + 1 > width) || ((y - 1) < 0) || n_idx < (graph.size() - 1)) {
             neighbours[0] = -1;
         }
+        else {
+            neighbours[0] = ++n_idx;
+        }
+        
         n_idx = ((y - 1) * width) + x;
-        if ((n_idx > 0 && n_idx < graph.size() - 1)) {
-            neighbours[1] = ++n_idx;
+        if ((x - 1 < 0) || (y - 1 < 0)) {
+            neighbours[0] = -1;
         }
         else {
-            neighbours[1] = -1;
+            neighbours[0] = ++n_idx;
         }
+        
         n_idx = (y * width) + (x + 1);
-        if ((n_idx > 0 && n_idx < graph.size() - 1)) {
-            neighbours[2] = ++n_idx;
+        if ((x - 1 < 0) || (y - 1 < 0)) {
+            neighbours[0] = -1;
         }
         else {
-            neighbours[2] = -1;
+            neighbours[0] = ++n_idx;
         }
+        
         n_idx = ((y + 1) * width) + x;
-        if ((n_idx > 0 && n_idx < graph.size() - 1)) {
-            neighbours[3] = ++n_idx;
+        if ((x - 1 < 0) || (y - 1 < 0)) {
+            neighbours[0] = -1;
         }
         else {
-            neighbours[3] = -1;
+            neighbours[0] = ++n_idx;
         }
+//        if ((n_idx > 0 && n_idx < graph.size() - 1)) {
+//            neighbours[0] = ++n_idx;
+//        }
+//        else {
+//        }
+//
+//        n_idx = ((y - 1) * width) + x;
+//        if ((n_idx > 0 && n_idx < graph.size() - 1)) {
+//            neighbours[1] = ++n_idx;
+//        }
+//        else {
+//            neighbours[1] = -1;
+//        }
+//        n_idx = (y * width) + (x + 1);
+//        if ((n_idx > 0 && n_idx < graph.size() - 1)) {
+//            neighbours[2] = ++n_idx;
+//        }
+//        else {
+//            neighbours[2] = -1;
+//        }
+//        n_idx = ((y + 1) * width) + x;
+//        if ((n_idx > 0 && n_idx < graph.size() - 1)) {
+//            neighbours[3] = ++n_idx;
+//        }
+//        else {
+//            neighbours[3] = -1;
+//        }
 
         return neighbours;
     }
