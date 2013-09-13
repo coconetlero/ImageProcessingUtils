@@ -125,7 +125,7 @@ public class BoykovKolmogorov {
      */
     public Edge[] grow() {
         while (!active.isEmpty()) {
-            Vertex p = active.pop();
+            Vertex p = active.getFirst();
             ArrayList<Edge> currentEdges = graph.getEdges(p);
             for (Edge edge : currentEdges) {
                 // if tree_cap(p->q) > 0
@@ -186,10 +186,20 @@ public class BoykovKolmogorov {
                             path[idx] = e;
                             idx++;
                         }
+
+                        // print path
+                        String s = "(";
+                        for (int i = 0; i < path.length; i++) {
+                            s += path[i];
+                            s += ", ";
+                        }
+                        s += ")";
+                        System.out.println(s);
                         return path;
                     }
                 }
             }
+            active.removeFirst();
         }
         return null;
     }
@@ -245,6 +255,7 @@ public class BoykovKolmogorov {
      */
     private void adopt(int width) {
         while (!orphans.isEmpty()) {
+            System.out.println(orphans.size());
             Vertex p = orphans.pop();
 
             // process p
@@ -287,28 +298,52 @@ public class BoykovKolmogorov {
 
             // If p does not find a valid parent, then p becomes a free node
             if (!findValidParent) {
-                ArrayList<Edge> edges = (tree(p) == 1) ? S.getEdges(p) : T.getEdges(p);
-                for (Edge e : edges) {
-                    Vertex q = e.getTarget();
-                    if (e.getWeight() > 0) {
-                        active.add(q);
+                for (int i = 0; i < neighbours.length; i++) {
+                    if (neighbours[i] > 0) {
+                        Edge e = graph.getEdge(new Vertex(neighbours[i]), p);
+                        Vertex q = e.getSource();
+                        if (tree(q) == tree(p)) {
+                            if (e.getWeight() > 0) {
+                                active.add(q);
+                            }
+                            if (q.getParent().equals(p)) {
+                                orphans.add(q);
+                                q.setParent(null);
+                            }
+                        }
                     }
-                    if (q.getParent().equals(p)) {
-                        orphans.add(q);
-                        p.setParent(null);
-                    }
                 }
-                if (tree(p) == 1) {
-                    S_tree[p.getName()] = false;
-                }
-                if (tree(p) == 2) {
-                    T_tree[p.getName()] = false;
-                }
+                S_tree[p.getName()] = false;
+                T_tree[p.getName()] = false;
+
                 int idx = active.indexOf(p);
                 while (idx >= 0) {
                     active.remove(idx);
                     idx = active.indexOf(p);
                 }
+
+//                ArrayList<Edge> edges = (tree(p) == 1) ? S.getEdges(p) : T.getEdges(p);
+//                for (Edge e : edges) {
+//                    Vertex q = e.getTarget();
+//                    if (e.getWeight() > 0) {
+//                        active.add(q);
+//                    }
+//                    if (q.getParent().equals(p)) {
+//                        orphans.add(q);
+//                        p.setParent(null);
+//                    }
+//                }
+//                if (tree(p) == 1) {
+//                    S_tree[p.getName()] = false;
+//                }
+//                if (tree(p) == 2) {
+//                    T_tree[p.getName()] = false;
+//                }
+//                int idx = active.indexOf(p);
+//                while (idx >= 0) {
+//                    active.remove(idx);
+//                    idx = active.indexOf(p);
+//                }
             }
         }
     }
