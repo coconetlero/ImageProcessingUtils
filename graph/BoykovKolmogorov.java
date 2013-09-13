@@ -35,16 +35,6 @@ public class BoykovKolmogorov {
     private Vertex target;
 
     /**
-     * The source tree
-     */
-    private Graph S;
-
-    /**
-     * The target tree
-     */
-    private Graph T;
-
-    /**
      *
      */
     private LinkedList<Vertex> active;
@@ -77,12 +67,6 @@ public class BoykovKolmogorov {
         this.source = source;
         this.target = target;
 
-
-        this.S = new Graph();
-        this.T = new Graph();
-        S.addVertex(source);
-        T.addVertex(target);
-
         this.active = new LinkedList<Vertex>();
         active.add(source);
         active.add(target);
@@ -102,14 +86,8 @@ public class BoykovKolmogorov {
     public ArrayList<Vertex> minCut(int width) {
         while (true) {
             Edge[] path = grow();
-            if (path == null) {
-                ArrayList<Vertex> mincut = new ArrayList<Vertex>(S.size());
-                for (Vertex v : S.getVertexes()) {
-                    if (!v.equals(source)) {
-                        mincut.add(v);
-                    }
-                }
-                return mincut;
+            if (path.length == 0) {                
+                return findFinalTreeVertexes();
             }
             augment(path);
             adopt(width);
@@ -135,13 +113,9 @@ public class BoykovKolmogorov {
                         q.setParent(p);
                         switch (this.tree(p)) {
                             case 1:
-                                S.addVertex(q);
-                                S.addEdge(graph.getEdge(p, q));
                                 S_tree[q.getName()] = true;
                                 break;
                             case 2:
-                                T.addVertex(q);
-                                T.addEdge(graph.getEdge(p, q));
                                 T_tree[q.getName()] = true;
                                 break;
                         }
@@ -188,20 +162,21 @@ public class BoykovKolmogorov {
                         }
 
                         // print path
-                        String s = "(";
-                        for (int i = 0; i < path.length; i++) {
-                            s += path[i];
-                            s += ", ";
-                        }
-                        s += ")";
-                        System.out.println(s);
+//                        String s = "(";
+//                        for (int i = 0; i < path.length; i++) {
+//                            s += path[i];
+//                            s += ", ";
+//                        }
+//                        s += ")";
+//                        System.out.println(s);
+
                         return path;
                     }
                 }
             }
             active.removeFirst();
         }
-        return null;
+        return new Edge[0];
     }
 
     /**
@@ -236,7 +211,7 @@ public class BoykovKolmogorov {
                 Vertex q = edge.getTarget();
 
                 if (tree(p) == 1 && tree(q) == 1) {
-                    p.setParent(null);
+                    q.setParent(null);
                     orphans.add(q);
                 }
                 if (tree(p) == 2 && tree(q) == 2) {
@@ -255,7 +230,7 @@ public class BoykovKolmogorov {
      */
     private void adopt(int width) {
         while (!orphans.isEmpty()) {
-            System.out.println(orphans.size());
+//            System.out.println(orphans.size());
             Vertex p = orphans.pop();
 
             // process p
@@ -300,15 +275,19 @@ public class BoykovKolmogorov {
             if (!findValidParent) {
                 for (int i = 0; i < neighbours.length; i++) {
                     if (neighbours[i] > 0) {
+
                         Edge e = graph.getEdge(new Vertex(neighbours[i]), p);
                         Vertex q = e.getSource();
                         if (tree(q) == tree(p)) {
                             if (e.getWeight() > 0) {
                                 active.add(q);
                             }
-                            if (q.getParent().equals(p)) {
-                                orphans.add(q);
-                                q.setParent(null);
+                            Vertex qParent = q.getParent();
+                            if (qParent != null) {
+                                if (qParent.equals(p)) {
+                                    orphans.add(q);
+                                    q.setParent(null);
+                                }
                             }
                         }
                     }
@@ -321,29 +300,6 @@ public class BoykovKolmogorov {
                     active.remove(idx);
                     idx = active.indexOf(p);
                 }
-
-//                ArrayList<Edge> edges = (tree(p) == 1) ? S.getEdges(p) : T.getEdges(p);
-//                for (Edge e : edges) {
-//                    Vertex q = e.getTarget();
-//                    if (e.getWeight() > 0) {
-//                        active.add(q);
-//                    }
-//                    if (q.getParent().equals(p)) {
-//                        orphans.add(q);
-//                        p.setParent(null);
-//                    }
-//                }
-//                if (tree(p) == 1) {
-//                    S_tree[p.getName()] = false;
-//                }
-//                if (tree(p) == 2) {
-//                    T_tree[p.getName()] = false;
-//                }
-//                int idx = active.indexOf(p);
-//                while (idx >= 0) {
-//                    active.remove(idx);
-//                    idx = active.indexOf(p);
-//                }
             }
         }
     }
@@ -431,6 +387,34 @@ public class BoykovKolmogorov {
         }
 
         return neighbours;
+    }
+
+    private ArrayList<Vertex> findFinalTreeVertexes() {
+        ArrayList<Vertex> treeVertexex = new ArrayList<Vertex>();
+        treeVertexex.add(source);
+        
+        Stack<Vertex> S = new Stack<Vertex>();
+        S.push(source);
+        source.setVisited(true);
+
+        // create a tree until target is reached 
+        while (!S.empty()) {
+            Vertex v = S.pop();
+            ArrayList<Edge> E = graph.getEdges(v);
+            // if v has an unvisited neighbour w                
+            for (Edge edge : E) {
+                if (edge.getWeight() > 0) {
+                    Vertex w = edge.getTarget();
+                    if (!w.isVisited()) {
+                        treeVertexex.add(w);
+                        w.setVisited(true);
+                        w.setParent(v);                        
+                        S.push(w);
+                    }
+                }
+            }            
+        }
+        return treeVertexex;
     }
     /**
      *
