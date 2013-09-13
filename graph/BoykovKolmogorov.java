@@ -249,6 +249,7 @@ public class BoykovKolmogorov {
 
             // process p
             // find a new valid parent for p
+            boolean findValidParent = false;
 
             // fisrt check if source or sink can be a valid parent
             switch (this.tree(p)) {
@@ -256,14 +257,14 @@ public class BoykovKolmogorov {
                     Edge es = graph.getEdge(source, p);
                     if (es.getWeight() > 0) {
                         p.setParent(source);
-                        return;
+                        findValidParent = true;
                     }
                     break;
                 case 2:
                     Edge et = graph.getEdge(target, p);
                     if (et.getWeight() > 0) {
                         p.setParent(target);
-                        return;
+                        findValidParent = true;
                     }
                     break;
             }
@@ -276,33 +277,35 @@ public class BoykovKolmogorov {
                     Vertex q = e.getSource();
                     if ((tree(q) == tree(p)) && (e.getWeight() > 0) && validOrigin(q)) {
                         p.setParent(q);
-                        return;
+                        findValidParent = true;
                     }
                 }
             }
 
             // If p does not find a valid parent, then p becomes a free node
-            ArrayList<Edge> edges = (tree(p) == 1) ? S.getEdges(p) : T.getEdges(p);
-            for (Edge e : edges) {
-                Vertex q = e.getTarget();
-                if (e.getWeight() > 0) {
-                    active.add(q);
+            if (!findValidParent) {
+                ArrayList<Edge> edges = (tree(p) == 1) ? S.getEdges(p) : T.getEdges(p);
+                for (Edge e : edges) {
+                    Vertex q = e.getTarget();
+                    if (e.getWeight() > 0) {
+                        active.add(q);
+                    }
+                    if (q.getParent().equals(p)) {
+                        orphans.add(q);
+                        p.setParent(null);
+                    }
                 }
-                if (q.getParent().equals(p)) {
-                    orphans.add(q);
-                    p.setParent(null);
+                if (tree(p) == 1) {
+                    S_tree[p.getName()] = false;
                 }
-            }
-            if (tree(p) == 1) {
-                S_tree[p.getName()] = false;
-            }
-            if (tree(p) == 2) {
-                T_tree[p.getName()] = false;
-            }
-            int idx = active.indexOf(p);
-            while (idx >= 0) {
-                active.remove(idx);
-                idx = active.indexOf(p);
+                if (tree(p) == 2) {
+                    T_tree[p.getName()] = false;
+                }
+                int idx = active.indexOf(p);
+                while (idx >= 0) {
+                    active.remove(idx);
+                    idx = active.indexOf(p);
+                }
             }
         }
     }
@@ -388,7 +391,7 @@ public class BoykovKolmogorov {
         } else {
             neighbours[3] = ++n_idx;
         }
-        
+
         return neighbours;
     }
     /**
