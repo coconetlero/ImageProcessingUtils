@@ -274,10 +274,13 @@ public class BoykovKolmogorov {
             for (int i = 0; i < neighbours.length; i++) {
                 if (neighbours[i] > 0) {
                     Edge e = graph.getEdge(new Vertex(neighbours[i]), p);
-                    Vertex q = e.getSource();
-                    if ((tree(q) == tree(p)) && (e.getWeight() > 0) && validOrigin(q)) {
-                        p.setParent(q);
-                        findValidParent = true;
+                    if (e.getWeight() > 0) {
+                        Vertex q = e.getSource();
+                        if ((tree(q) == tree(p)) && validOrigin(q)) {
+                            p.setParent(q);
+                            findValidParent = true;
+                            break;
+                        }
                     }
                 }
             }
