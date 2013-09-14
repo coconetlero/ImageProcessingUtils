@@ -81,8 +81,7 @@ public class Graph {
     }
 
     /**
-     * Add an
-     * <code>Edge</code> to the graph.
+     * Add an <code>Edge</code> to the graph.
      *
      * @param edge
      *
@@ -91,7 +90,7 @@ public class Graph {
      */
     public boolean addEdge(Edge edge) {
         Vertex source = edge.getSource();
-        ArrayList<Edge> edges = graph.get((Vertex) source);
+        ArrayList<Edge> edges = graph.get(source);
         for (Edge e : edges) {
             if (e.equals(edge)) {
                 return false;
