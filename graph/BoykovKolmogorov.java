@@ -104,7 +104,7 @@ public class BoykovKolmogorov {
     public Edge[] grow() {
         while (!active.isEmpty()) {
             Vertex p = active.getFirst();
-            ArrayList<Edge> currentEdges = graph.getEdges(p);
+            ArrayList<Edge> currentEdges = graph.getEdges2(p);
             for (Edge edge : currentEdges) {
                 // if tree_cap(p->q) > 0
                 if (edge.getWeight() > 0) {
@@ -400,7 +400,7 @@ public class BoykovKolmogorov {
         // create a tree until target is reached 
         while (!S.empty()) {
             Vertex v = S.pop();
-            ArrayList<Edge> E = graph.getEdges(v);
+            ArrayList<Edge> E = graph.getEdges2(v);
             // if v has an unvisited neighbour w                
             for (Edge edge : E) {
                 if (edge.getWeight() > 0) {
@@ -416,43 +416,4 @@ public class BoykovKolmogorov {
         }
         return treeVertexex;
     }
-    /**
-     *
-     * @param path
-     *
-     * @return
-     */
-//    private ArrayList<Edge> vertexToEdgePath(Stack<Vertex> inputPath) {
-//        // from target retrieve the source
-//        LinkedList<Vertex> sPath = new LinkedList<Vertex>();
-//        sPath.add(target);
-//        while (sPath.getLast().getParent() != null) {
-//            sPath.add(sPath.getLast().getParent());
-//        }
-//
-//        Edge[] path = new Edge[sPath.size() - 1];
-//        int i = 0;
-//        while (!sPath.isEmpty()) {
-//            Vertex v = sPath.removeFirst();
-//            if (v.getParent() != null) {
-//                ArrayList<Edge> E = tree.getEdges(v.getParent());
-//                for (Edge e : E) {
-//                    if (v.equals(e.getTarget())) {
-//                        path[i] = e;
-////                            System.out.println(e);
-//                        break;
-//                    }
-//                }
-//            }
-//            i++;
-//        }
-//
-//
-//
-//        if (path.length > 0) {
-//            return path;
-//        } else {
-//            return null;
-//        }
-//    }
 }
