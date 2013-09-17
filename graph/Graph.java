@@ -85,7 +85,7 @@ public class Graph {
      * <code>Edge</code> to the graph.
      *
      * @param edge
-     * @return true if the Edge was added, false in other case. The Edge can be 
+     * @return true if the Edge was added, false in other case. The Edge can't be 
      * added if edge with the same source and target vertex exist.
      */
     public boolean addEdge(Edge edge) {
@@ -181,7 +181,7 @@ public class Graph {
     public Edge getEdge(Vertex source, Vertex target) {
         ArrayList<Edge> edges = graph.get(source);
         for (Edge e : edges) {
-            if(e.getSource().equals(source) && e.getTarget().equals(target)) {
+            if((e.getSource() == source) && (e.getTarget() == target)) {
                 return e;
             }                
         }        
