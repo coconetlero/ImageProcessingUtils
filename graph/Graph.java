@@ -97,7 +97,6 @@ public class Graph {
             }                
         }
         edges.add(edge);
-        graph.put(source, edges);
         return true;
     }
 
