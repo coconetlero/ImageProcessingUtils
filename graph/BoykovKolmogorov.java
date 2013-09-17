@@ -1,8 +1,12 @@
 package graph;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Deque;
 import java.util.LinkedList;
 import java.util.Stack;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -23,37 +27,30 @@ public class BoykovKolmogorov {
      * The given graph to apply this algorithm
      */
     private Graph graph;
-
     /**
      * the source vertex for the algorithm
      */
     private Vertex source;
-
     /**
      * the sink vertex for the algorithm
      */
     private Vertex target;
-
     /**
      *
      */
     private LinkedList<Vertex> active;
-
     /**
      *
      */
     private LinkedList<Vertex> orphans;
-
     /**
      * Flag indicating the affiliation of each vertex, for vertexes in S tree
      */
     private boolean[] S_tree;
-
     /**
      *
      */
     private boolean[] T_tree;
-
     int idxxx = 0;
 
     /**
@@ -86,7 +83,7 @@ public class BoykovKolmogorov {
     public ArrayList<Vertex> minCut(int width) {
         while (true) {
             Edge[] path = grow();
-            if (path.length == 0) {                
+            if (path.length == 0) {
                 return findFinalTreeVertexes();
             }
             augment(path);
@@ -99,69 +96,73 @@ public class BoykovKolmogorov {
      *
      *
      * @return an <code>ArrayList</code> containing the path between source and
-     *         target vertexes as a sequence.
+     * target vertexes as a sequence.
      */
     public Edge[] grow() {
         while (!active.isEmpty()) {
             Vertex p = active.getFirst();
-            ArrayList<Edge> currentEdges = graph.getEdges(p);
-            for (Edge edge : currentEdges) {
-                // if tree_cap(p->q) > 0
-                if (edge.getWeight() > 0) {
-                    Vertex q = edge.getTarget();
-                    if (this.tree(q) == 0) {
-                        q.setParent(p);
-                        switch (this.tree(p)) {
-                            case 1:
-                                S_tree[q.getName()] = true;
-                                break;
-                            case 2:
-                                T_tree[q.getName()] = true;
-                                break;
-                        }
-                        active.add(q);
-                    }
-                    if ((this.tree(q) != 0) && (this.tree(q) != this.tree(p))) {
-                        // return P = PATH_(s->t)                                                       
-                        Stack<Edge> sPath = new Stack<Edge>();
+            ArrayList<Edge> currentEdges;
+            try {
+                currentEdges = graph.getEdges(p);
 
-                        // find path from p to s
-                        Vertex current = p;
-                        Vertex parent = current.getParent();
-                        while (parent != null) {
-                            Edge e = graph.getEdge(parent, current);
-                            sPath.push(e);
-                            current = parent;
+                for (Edge edge : currentEdges) {
+                    // if tree_cap(p->q) > 0
+                    if (edge.getWeight() > 0) {
+                        Vertex q = edge.getTarget();
+                        if (this.tree(q) == 0) {
+                            q.setParent(p);
+                            switch (this.tree(p)) {
+                                case 1:
+                                    S_tree[q.getName()] = true;
+                                    break;
+                                case 2:
+                                    T_tree[q.getName()] = true;
+                                    break;
+                            }
+                            active.add(q);
+                        }
+                        if ((this.tree(q) != 0) && (this.tree(q) != this.tree(p))) {
+                            // return P = PATH_(s->t)                                                       
+//                            Stack<Edge> sPath = new Stack<Edge>();
+                            Deque<Edge> sPath = new ArrayDeque<Edge>();
+
+                            // find path from p to s
+                            Vertex current = p;
+                            Vertex parent = current.getParent();
+                            while (parent != null) {
+                                Edge e = graph.getEdge(parent, current);
+                                sPath.push(e);
+                                current = parent;
+                                parent = current.getParent();
+                            }
+
+                            // find path from q to t 
+                            ArrayList<Edge> tPath = new ArrayList<Edge>();
+
+                            current = q;
                             parent = current.getParent();
-                        }
+                            while (parent != null) {
+                                Edge e = graph.getEdge(parent, current);
+                                tPath.add(e);
+                                current = parent;
+                                parent = current.getParent();
+                            }
 
-                        // find path from q to t 
-                        ArrayList<Edge> tPath = new ArrayList<Edge>();
-
-                        current = q;
-                        parent = current.getParent();
-                        while (parent != null) {
-                            Edge e = graph.getEdge(parent, current);
-                            tPath.add(e);
-                            current = parent;
-                            parent = current.getParent();
-                        }
-
-                        // concatenate the the paths s->p and q->t
-                        Edge[] path = new Edge[sPath.size() + tPath.size() + 1];
-                        int idx = 0;
-                        while (!sPath.empty()) {
-                            path[idx] = sPath.pop();
+                            // concatenate the the paths s->p and q->t
+                            Edge[] path = new Edge[sPath.size() + tPath.size() + 1];
+                            int idx = 0;
+                            while (!sPath.isEmpty()){
+                                path[idx] = sPath.pop();
+                                idx++;
+                            }
+                            path[idx] = graph.getEdge(p, q);
                             idx++;
-                        }
-                        path[idx] = graph.getEdge(p, q);
-                        idx++;
-                        for (Edge e : tPath) {
-                            path[idx] = e;
-                            idx++;
-                        }
+                            for (Edge e : tPath) {
+                                path[idx] = e;
+                                idx++;
+                            }
 
-                        // print path
+                            // print path
 //                        String s = "(";
 //                        for (int i = 0; i < path.length; i++) {
 //                            s += path[i];
@@ -170,9 +171,13 @@ public class BoykovKolmogorov {
 //                        s += ")";
 //                        System.out.println(s);
 
-                        return path;
+                            return path;
+                        }
                     }
                 }
+            }
+            catch (Exception ex) {
+                Logger.getLogger(BoykovKolmogorov.class.getName()).log(Level.SEVERE, null, ex);
             }
             active.removeFirst();
         }
@@ -202,7 +207,8 @@ public class BoykovKolmogorov {
             if (residualEdge == null) {
                 residualEdge = new Edge(edge.getTarget(), edge.getSource(), delta);
                 graph.addEdge(residualEdge);
-            } else {
+            }
+            else {
                 residualEdge.setWeight(residualEdge.getWeight() + delta);
             }
 
@@ -310,7 +316,7 @@ public class BoykovKolmogorov {
      * @param v a vertex in question
      *
      * @return 0 if vertex is orphan. 1 if vertex belongs to S tree. 2 if vertex
-     *         belongs to T tree.
+     * belongs to T tree.
      */
     private int tree(Vertex v) {
         int name = v.getName();
@@ -322,7 +328,8 @@ public class BoykovKolmogorov {
         }
         if (T_tree[name]) {
             return 2;
-        } else {
+        }
+        else {
             return -1;
         }
     }
@@ -334,7 +341,7 @@ public class BoykovKolmogorov {
      * @param q current Vertex
      *
      * @return true if valid path to the source or sink vertex was found, or
-     *         false in other case
+     * false in other case
      */
     private boolean validOrigin(Vertex q) {
         Vertex parent = q.getParent();
@@ -363,26 +370,30 @@ public class BoykovKolmogorov {
 
         if ((x - 1) < 0) {
             neighbours[0] = -1;
-        } else {
+        }
+        else {
             neighbours[0] = ((y * width) + (x - 1)) + 1;
         }
 
         if ((y - 1) < 0) {
             neighbours[1] = -1;
-        } else {
+        }
+        else {
             neighbours[1] = (((y - 1) * width) + x) + 1;
         }
 
         if ((x + 1) == width) {
             neighbours[2] = -1;
-        } else {
+        }
+        else {
             neighbours[2] = ((y * width) + (x + 1)) + 1;
         }
 
         int n_idx = ((y + 1) * width) + x;
         if (n_idx >= (graph.size() - 2)) {
             neighbours[3] = - 1;
-        } else {
+        }
+        else {
             neighbours[3] = ++n_idx;
         }
 
@@ -392,27 +403,32 @@ public class BoykovKolmogorov {
     private ArrayList<Vertex> findFinalTreeVertexes() {
         ArrayList<Vertex> treeVertexex = new ArrayList<Vertex>();
         treeVertexex.add(source);
-        
+
         Stack<Vertex> S = new Stack<Vertex>();
         S.push(source);
         source.setVisited(true);
 
         // create a tree until target is reached 
         while (!S.empty()) {
-            Vertex v = S.pop();
-            ArrayList<Edge> E = graph.getEdges(v);
-            // if v has an unvisited neighbour w                
-            for (Edge edge : E) {
-                if (edge.getWeight() > 0) {
-                    Vertex w = edge.getTarget();
-                    if (!w.isVisited()) {
-                        treeVertexex.add(w);
-                        w.setVisited(true);
-                        w.setParent(v);                        
-                        S.push(w);
+            try {
+                Vertex v = S.pop();                
+                ArrayList<Edge> E = graph.getEdges(v);
+                // if v has an unvisited neighbour w                
+                for (Edge edge : E) {
+                    if (edge.getWeight() > 0) {
+                        Vertex w = edge.getTarget();
+                        if (!w.isVisited()) {
+                            treeVertexex.add(w);
+                            w.setVisited(true);
+                            w.setParent(v);
+                            S.push(w);
+                        }
                     }
                 }
-            }            
+            }
+            catch (Exception ex) {
+                Logger.getLogger(BoykovKolmogorov.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
         return treeVertexex;
     }
