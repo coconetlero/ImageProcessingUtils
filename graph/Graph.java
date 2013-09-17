@@ -144,12 +144,13 @@ public class Graph {
     }
 
     /**
-     * Get all the edges of the given vertex in this graph.
+     * Get all the edges of the given vertex in this graph. Fisrt check if the 
+     * vertex exist into the graph
      *
      * @param vertex contained in this graph
      * @return
      */
-    public ArrayList<Edge> getEdges(Vertex vertex) {
+    public ArrayList<Edge> getEdges(Vertex vertex) throws Exception {
         if (graph.containsKey(vertex)) {
             return graph.get(vertex);
         }
@@ -157,6 +158,18 @@ public class Graph {
             throw new NullPointerException("Vertex " + vertex
                     + " does not belong to the graph");
         }
+    }
+    
+    /**
+     * Get all the edges of the given vertex in this graph. The difference with
+     * getEdges(Vertex vertex) is that this method don't verify the existence of 
+     * the vertex in this <code>Graph</code>
+     *
+     * @param vertex contained in this graph
+     * @return
+     */
+    public ArrayList<Edge> getEdges2(Vertex vertex) {        
+       return graph.get(vertex);
     }
     
     /**
@@ -213,7 +226,7 @@ public class Graph {
      *
      * @return a new <code>Graph</code> with no directed paths.
      */
-    public Graph makeUndirectedGraph() {
+    public Graph makeUndirectedGraph() throws Exception {
         Graph undirectedGraph = this.duplicate();
 
         for (Vertex vertex : undirectedGraph.getVertexes()) {
