@@ -1,8 +1,6 @@
 package graph;
 
-import java.util.ArrayDeque;
 import java.util.ArrayList;
-import java.util.Deque;
 import java.util.LinkedList;
 import java.util.Stack;
 import java.util.logging.Level;
@@ -103,7 +101,7 @@ public class BoykovKolmogorov {
             Vertex p = active.getFirst();
             ArrayList<Edge> currentEdges;
             try {
-                currentEdges = graph.getEdges(p);
+                currentEdges = graph.getEdges2(p);
 
                 for (Edge edge : currentEdges) {
                     // if tree_cap(p->q) > 0
@@ -124,7 +122,7 @@ public class BoykovKolmogorov {
                         if ((this.tree(q) != 0) && (this.tree(q) != this.tree(p))) {
                             // return P = PATH_(s->t)                                                       
 //                            Stack<Edge> sPath = new Stack<Edge>();
-                            Deque<Edge> sPath = new ArrayDeque<Edge>();
+                            LinkedList<Edge> sPath = new LinkedList<Edge>();
 
                             // find path from p to s
                             Vertex current = p;
@@ -432,43 +430,4 @@ public class BoykovKolmogorov {
         }
         return treeVertexex;
     }
-    /**
-     *
-     * @param path
-     *
-     * @return
-     */
-//    private ArrayList<Edge> vertexToEdgePath(Stack<Vertex> inputPath) {
-//        // from target retrieve the source
-//        LinkedList<Vertex> sPath = new LinkedList<Vertex>();
-//        sPath.add(target);
-//        while (sPath.getLast().getParent() != null) {
-//            sPath.add(sPath.getLast().getParent());
-//        }
-//
-//        Edge[] path = new Edge[sPath.size() - 1];
-//        int i = 0;
-//        while (!sPath.isEmpty()) {
-//            Vertex v = sPath.removeFirst();
-//            if (v.getParent() != null) {
-//                ArrayList<Edge> E = tree.getEdges(v.getParent());
-//                for (Edge e : E) {
-//                    if (v.equals(e.getTarget())) {
-//                        path[i] = e;
-////                            System.out.println(e);
-//                        break;
-//                    }
-//                }
-//            }
-//            i++;
-//        }
-//
-//
-//
-//        if (path.length > 0) {
-//            return path;
-//        } else {
-//            return null;
-//        }
-//    }
 }
