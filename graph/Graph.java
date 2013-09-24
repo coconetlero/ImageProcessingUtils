@@ -171,19 +171,6 @@ public class Graph {
     }
 
     /**
-     * Get all the edges of the given vertex in this graph. Don't make an error 
-     * previows check.
-     * 
-     *
-     * @param vertex contained in this graph
-     *
-     * @return
-     */
-    public ArrayList<Edge> getEdges2(Vertex vertex) {
-        return graph.get(vertex);
-    }
-
-    /**
      * Return a reference into graph for the edge with geiven source and target
      * vertex.
      *
