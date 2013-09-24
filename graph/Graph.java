@@ -84,9 +84,8 @@ public class Graph {
      * Add an <code>Edge</code> to the graph.
      *
      * @param edge
-     *
-     * @return true if the Edge was added, false in other case. The Edge can be
-     *         added if edge with the same source and target vertex exist.
+     * @return true if the Edge was added, false in other case. The Edge can't be 
+     * added if edge with the same source and target vertex exist.
      */
     public boolean addEdge(Edge edge) {
         Vertex source = edge.getSource();
@@ -97,7 +96,6 @@ public class Graph {
             }
         }
         edges.add(edge);
-        graph.put(source, edges);
         return true;
     }
 
@@ -144,20 +142,32 @@ public class Graph {
     }
 
     /**
-     * Get all the edges of the given vertex in this graph. If the vertex don't 
-     * belongs to this graph, the method throws an exception
+     * Get all the edges of the given vertex in this graph. Fisrt check if the 
+     * vertex exist into the graph
      *
      * @param vertex contained in this graph
      *
      * @return
      */
-    public ArrayList<Edge> getEdges(Vertex vertex) {
+    public ArrayList<Edge> getEdges(Vertex vertex) throws Exception {
         if (graph.containsKey(vertex)) {
             return graph.get(vertex);
         } else {
             throw new NullPointerException("Vertex " + vertex
                     + " does not belong to the graph");
         }
+    }
+    
+    /**
+     * Get all the edges of the given vertex in this graph. The difference with
+     * getEdges(Vertex vertex) is that this method don't verify the existence of 
+     * the vertex in this <code>Graph</code>
+     *
+     * @param vertex contained in this graph
+     * @return
+     */
+    public ArrayList<Edge> getEdges2(Vertex vertex) {        
+       return graph.get(vertex);
     }
 
     /**
@@ -229,7 +239,7 @@ public class Graph {
      *
      * @return a new <code>Graph</code> with no directed paths.
      */
-    public Graph makeUndirectedGraph() {
+    public Graph makeUndirectedGraph() throws Exception {
         Graph undirectedGraph = this.duplicate();
 
         for (Vertex vertex : undirectedGraph.getVertexes()) {

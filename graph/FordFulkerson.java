@@ -3,6 +3,8 @@ package graph;
 import java.util.ArrayList;
 import java.util.Set;
 import java.util.Stack;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Implements the Min Cut - Max Flow Ford-Fulkerson algorithm for graphs. The
@@ -119,30 +121,35 @@ public class FordFulkerson {
 
         // create a tree until target is reached 
         while (!S.empty() && !pathFound) {
-            Vertex v = S.pop();
-            ArrayList<Edge> E = new ArrayList<Edge>();
+            try {
+                Vertex v = S.pop();
+                ArrayList<Edge> E = new ArrayList<Edge>();
 
-            // if v has an unvisited neighbour w 
-            for (Edge edge : graph.getEdges(v)) {
-                Vertex w = edge.getTarget();
-                if (w.equals(target) && (edge.getWeight() > 0)) {
-                    w.setVisited(true);
-                    w.setParent(v);
-                    E.add(edge);
-                    tree.addConnectedVertex(v, E);
-                    tree.addVertex(w);
-                    pathFound = true;
-                    break;
+                // if v has an unvisited neighbour w 
+                for (Edge edge : graph.getEdges(v)) {
+                    Vertex w = edge.getTarget();
+                    if (w.equals(target) && (edge.getWeight() > 0)) {
+                        w.setVisited(true);
+                        w.setParent(v);
+                        E.add(edge);
+                        tree.addConnectedVertex(v, E);
+                        tree.addVertex(w);
+                        pathFound = true;
+                        break;
+                    }
+                    else if (!w.isVisited() && (edge.getWeight() > 0)) {
+                        w.setVisited(true);
+                        w.setParent(v);
+                        E.add(edge);
+                        S.push(w);
+                    }
                 }
-                else if (!w.isVisited() && (edge.getWeight() > 0)) {
-                    w.setVisited(true);
-                    w.setParent(v);
-                    E.add(edge);
-                    S.push(w);
+                if (!pathFound) {
+                    tree.addConnectedVertex(v, E);
                 }
             }
-            if (!pathFound) {
-                tree.addConnectedVertex(v, E);
+            catch (Exception ex) {
+                Logger.getLogger(FordFulkerson.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
 
@@ -171,9 +178,14 @@ public class FordFulkerson {
             Set<Vertex> minCut = tree.getVertexes();
             ArrayList<Edge> edges = new ArrayList<Edge>();
             for (Vertex v : minCut) {
-                ArrayList<Edge> E = tree.getEdges(v);
-                for (Edge e : E) {
-                    edges.add(e);
+                try {
+                    ArrayList<Edge> E = tree.getEdges(v);
+                    for (Edge e : E) {
+                        edges.add(e);
+                    }
+                }
+                catch (Exception ex) {
+                    Logger.getLogger(FordFulkerson.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
 
