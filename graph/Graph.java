@@ -180,7 +180,7 @@ public class Graph {
     public Edge getEdge(Vertex source, Vertex target) {
         ArrayList<Edge> edges = graph.get(source);
         for (Edge e : edges) {
-            if((e.getSource() == source) && (e.getTarget() == target)) {
+            if((e.getSource().equals(source)) && (e.getTarget().equals(target))) {
                 return e;
             }                
         }        
