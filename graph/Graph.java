@@ -42,38 +42,45 @@ public class Graph {
      * must be contained in the vertexes set.
      *
      * @param vertexes an array of vertex
-     * @param edges    an array of edges
+     * @param edges an array of edges
      */
     public Graph(Vertex[] vertexes, Edge[] edges) {
         this.graph = new HashMap<Vertex, ArrayList<Edge>>(vertexes.length);
 
+        // add vertexes
         for (int i = 0; i < vertexes.length; i++) {
             ArrayList<Edge> vertexEdges = new ArrayList<Edge>();
             graph.put(vertexes[i], vertexEdges);
         }
 
+        // add given edges
         for (int i = 0; i < edges.length; i++) {
             Edge edge = edges[i];
-            Vertex source = edge.getSource();
-            ArrayList<Edge> tempEdges = graph.get((Vertex) source);
-            tempEdges.add(edge);
-            graph.put(source, tempEdges);
+            if (graph.containsKey(edge.getSource()) && graph.containsKey(edge.getTarget())) {
+                Vertex source = edge.getSource();
+                ArrayList<Edge> tempEdges = graph.get((Vertex) source);
+                tempEdges.add(edge);
+                graph.put(source, tempEdges);
+            }
+            else {
+                throw new IllegalArgumentException("Given node in the edge isn't present in the graph");
+            }
         }
     }
 
     /**
-     * Adds a vertex connected by some edges to the graph
+     * Adds a connected vertex to the graph through edges
      *
      * @param vertex the new vertex
-     * @param edges  an ArrayList of the <code>Edge</code>s that conect this
-     *               vertex to the graph
+     * @param edges an ArrayList of the <code>Edge</code>s that conect this
+     * vertex to the graph
      */
     public void addConnectedVertex(Vertex vertex, ArrayList<Edge> edges) {
         graph.put(vertex, edges);
     }
 
     /**
-     * Add a disconnected vertex to the graph
+     * Adds a disconnected vertex to the graph
      */
     public void addVertex(Vertex vertex) {
         ArrayList<Edge> edges = new ArrayList<Edge>();
@@ -81,27 +88,31 @@ public class Graph {
     }
 
     /**
-     * Add an <code>Edge</code> to the graph.
+     * Adds an <code>Edge</code> to the graph.
      *
      * @param edge
-     * @return true if the Edge was added, false in other case. The Edge can't be 
-     * added if edge with the same source and target vertex exist.
+     * @return true if the Edge was added, false in other case. The Edge can't
+     * be added if edge with the same source and target vertex exist.
      */
     public boolean addEdge(Edge edge) {
-        Vertex source = edge.getSource();
-        ArrayList<Edge> edges = graph.get(source);
-        for (Edge e : edges) {
-            if (e.equals(edge)) {
-                return false;
+        if (graph.containsKey(edge.getSource()) && graph.containsKey(edge.getTarget())) {
+            Vertex source = edge.getSource();
+            ArrayList<Edge> edges = graph.get(source);
+            for (Edge e : edges) {
+                if (e.equals(edge)) {
+                    return false;
+                }
             }
+            edges.add(edge);
+            return true;
         }
-        edges.add(edge);
-        return true;
+        else {
+            throw new IllegalArgumentException("Given node in the edge isn't present in the graph");
+        }
     }
 
     /**
-     * Return all vertexes contained in this graph as a
-     * <code>Set</code>
+     * Returns all vertexes contained in this graph as a <code>Set</code>
      *
      * @return
      */
@@ -110,13 +121,12 @@ public class Graph {
     }
 
     /**
-     * Find the Vertex in the graph with the given name
-     * <code>Set</code>
+     * Finds the Vertex in the graph with the given name
      *
-     * @return the Vertex contained in the graph with the given name, or null if
-     *         not exisit the desired vertex.
+     * @return the <code>Vertex</code> contained in the graph with the given name, 
+     * or null if the desired vertex not exist.
      */
-    public Vertex getVertex(int name) {
+    public Vertex getVertex(int name) {        
         Set<Vertex> V = graph.keySet();
         for (Vertex v : V) {
             if (v.getName() == name) {
@@ -127,7 +137,7 @@ public class Graph {
     }
 
     /**
-     * Return all vertexes contained in this graph as an Array.
+     * Returns all vertexes contained in this graph as an Array.
      *
      * @return an array containing all vertexes of this graph.
      */
@@ -142,7 +152,7 @@ public class Graph {
     }
 
     /**
-     * Get all the edges of the given vertex in this graph. Fisrt check if the 
+     * Gets all the edges of the given vertex in this graph. Fisrt check if the
      * vertex exist into the graph
      *
      * @param vertex contained in this graph
@@ -152,26 +162,28 @@ public class Graph {
     public ArrayList<Edge> getEdges(Vertex vertex) throws Exception {
         if (graph.containsKey(vertex)) {
             return graph.get(vertex);
-        } else {
+        }
+        else {
             throw new NullPointerException("Vertex " + vertex
                     + " does not belong to the graph");
         }
     }
-    
+
     /**
-     * Get all the edges of the given vertex in this graph. The difference with
-     * getEdges(Vertex vertex) is that this method don't verify the existence of 
-     * the vertex in this <code>Graph</code>
+     * Gets all the edges of the given vertex in this graph. The difference with
+     * getEdges(Vertex vertex) is that this method don't verify the existence of
+     * the vertex in this
+     * <code>Graph</code>
      *
      * @param vertex contained in this graph
      * @return
      */
-    public ArrayList<Edge> getEdges2(Vertex vertex) {        
-       return graph.get(vertex);
+    public ArrayList<Edge> getEdges2(Vertex vertex) {
+        return graph.get(vertex);
     }
 
     /**
-     * Return a reference into graph for the edge with geiven source and target
+     * Returns a reference into graph for the edge with geiven source and target
      * vertex.
      *
      * @param edge
@@ -181,7 +193,7 @@ public class Graph {
     public Edge getEdge(Vertex source, Vertex target) {
         ArrayList<Edge> edges = graph.get(source);
         for (Edge e : edges) {
-            if((e.getSource().equals(source)) && (e.getTarget().equals(target))) {
+            if ((e.getSource().equals(source)) && (e.getTarget().equals(target))) {
                 return e;
             }
         }
@@ -189,7 +201,7 @@ public class Graph {
     }
 
     /**
-     * Get the number of vertexes
+     * Gets the number of vertexes
      *
      * @return
      */
@@ -204,9 +216,10 @@ public class Graph {
      */
 //    public boolean isConnected() {
 //    }
+    
+    
     /**
-     * Create a clone of this
-     * <code>Graph</code>.
+     * Clones this <code>Graph</code>.
      *
      * @return a new <code>Graph</code> that's identically to this Graph.
      */
@@ -220,7 +233,7 @@ public class Graph {
     }
 
     /**
-     * Create an undirected graph, from this graph. The new undirected graph
+     * Creates an undirected graph, from this graph. The new undirected graph
      * duplicate all directed edges in this graph but in opossite direction,
      * only if the edge doesn't exists.
      *
@@ -235,7 +248,8 @@ public class Graph {
                 ArrayList<Edge> tE = undirectedGraph.getEdges(edge.getTarget());
                 if (tE.isEmpty()) {
                     tE.add(new Edge(edge.getTarget(), edge.getSource(), edge.getWeight()));
-                } else {
+                }
+                else {
                     Edge temp = new Edge(edge.getTarget(), edge.getSource(), edge.getWeight());
                     boolean found = false;
                     for (Edge te : tE) {
@@ -255,7 +269,7 @@ public class Graph {
     }
 
     /**
-     * Find a path between source and target vertexes into this graph, using the
+     * Finds a path between source and target vertexes into this graph, using the
      * Depth-first search algoritm for traversingthe graph. This function works
      * with directed or undirected no weighted graphs.
      *
@@ -263,7 +277,7 @@ public class Graph {
      * @param target vertex
      *
      * @return an <code>ArrayList</code> containing the path between source and
-     *         target vertexes as a sequence.
+     * target vertexes as a sequence.
      */
     public Vertex[] pathDFS(Vertex source, Vertex target) {
         if (graph.containsKey(source) && graph.containsKey(target)) {
@@ -289,7 +303,8 @@ public class Graph {
                         tree.addVertex(w);
                         pathFound = true;
                         break;
-                    } else if (!w.isVisited()) {
+                    }
+                    else if (!w.isVisited()) {
                         w.setVisited(true);
                         w.setParent(v);
                         E.add(edge);
@@ -308,19 +323,20 @@ public class Graph {
 
             Vertex[] path = new Vertex[sPath.size()];
             return sPath.toArray(path);
-        } else {
+        }
+        else {
             throw new NullPointerException("Vertex source " + source + " or Vertex target "
                     + target + " does not belong to the graph");
         }
     }
 
     /**
-     * Test if the graph contains the given vertex.
+     * Tests if the graph contains the given vertex.
      *
      * @param vertex
      *
      * @return true if the graph contians the given vertex and false in other
-     *         case.
+     * case.
      */
     public boolean contains(Vertex vertex) {
         return graph.containsKey(vertex);
@@ -336,8 +352,7 @@ public class Graph {
     }
 
     /**
-     * Build a string representation of the adjency matrix, corresponding of
-     * this graph.
+     * Builds a string representation of the adjacency matrix, corresponding of this graph.
      *
      * @return a string
      */
@@ -356,7 +371,7 @@ public class Graph {
                 graphString += (i == 0) ? "" : ", ";
                 Edge e = edges.get(i);
                 graphString += ("(" + e.getTarget().getName() + ", "
-                        + e.getWeight() + ")");
+                                + e.getWeight() + ")");
             }
             graphString += ("] \n");
         }
