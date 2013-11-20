@@ -196,7 +196,7 @@ public class BoykovKolmogorov {
             }
         }
 
-        // update the residual graph by pushing flow Delta through P
+        // update the residual graph by pushing Delta flow through the path P
         for (int i = 0; i < path.length; i++) {
             Edge edge = path[i];
             edge.setWeight(edge.getWeight() - delta);
@@ -299,11 +299,15 @@ public class BoykovKolmogorov {
                 S_tree[p.getName()] = false;
                 T_tree[p.getName()] = false;
 
-                int idx = active.indexOf(p);
-                while (idx >= 0) {
-                    active.remove(idx);
-                    idx = active.indexOf(p);
+                while(active.remove(p)) {
+                    
                 }
+                
+//                int idx = active.indexOf(p);
+//                while (idx >= 0) {
+//                    active.remove(idx);
+//                    idx = active.indexOf(p);
+//                }
             }
         }
     }
