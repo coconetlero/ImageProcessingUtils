@@ -38,7 +38,7 @@ public class Graph {
     }
 
     /**
-     * Create a graph with some vertxes and edges. The vertexes of the edges
+     * Creates a graph with some vertxes and edges. The vertexes of the edges
      * must be contained in the vertexes set.
      *
      * @param vertexes an array of vertex
