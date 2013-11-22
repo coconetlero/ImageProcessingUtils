@@ -44,13 +44,27 @@ public class BoykovKolmogorov {
     /**
      * Flag indicating the affiliation of each vertex, for vertexes in S tree
      */
-    private boolean[] S_tree;
+    
     /**
-     *
+     * Node belongs to?
      */
-    private boolean[] T_tree;
-    int idxxx = 0;
+    private int[] belongsToTree;
+    
+    /**
+     * S-tree
+     */
+    private static final int S = 1;
 
+    /**
+     * T-tree
+     */
+    private static final int T = 2;
+    
+    /**
+     * Not belonging to any tree
+     */
+    private static final int NA = 0;
+    
     /**
      *
      * @param graph
@@ -68,10 +82,9 @@ public class BoykovKolmogorov {
 
         this.orphans = new LinkedList<Vertex>();
 
-        this.S_tree = new boolean[graph.size()];
-        this.T_tree = new boolean[graph.size()];
-        S_tree[source.getName()] = true;
-        T_tree[target.getName()] = true;
+        this.belongsToTree = new int[graph.size()];        
+        belongsToTree[source.name()] = S;
+        
     }
 
     /**
@@ -105,45 +118,46 @@ public class BoykovKolmogorov {
 
                 for (Edge edge : currentEdges) {
                     // if tree_cap(p->q) > 0
-                    if (edge.getWeight() > 0) {
+                    if (edge.getWeight() > 0) {                        
                         Vertex q = edge.getTarget();
-                        if (this.tree(q) == 0) {
+                        // if vertex is free
+                        if (belongsToTree[q.name()] == NA) {
                             q.setParent(p);
-                            switch (this.tree(p)) {
-                                case 1:
-                                    S_tree[q.getName()] = true;
+                            switch (belongsToTree[p.name()]) {
+                                case S:
+                                    belongsToTree[q.name()] = S;
                                     break;
-                                case 2:
-                                    T_tree[q.getName()] = true;
+                                case T:
+                                    belongsToTree[q.name()] = T;
                                     break;
                             }
                             active.add(q);
                         }
-                        if ((this.tree(q) != 0) && (this.tree(q) != this.tree(p))) {
+                        if ((belongsToTree[q.name()] != NA) && (belongsToTree[q.name()] != belongsToTree[p.name()])) {
                             // return P = PATH_(s->t)                                                       
 //                            Stack<Edge> sPath = new Stack<Edge>();
                             LinkedList<Edge> sPath = new LinkedList<Edge>();
 
                             // find path from p to s
                             Vertex current = p;
-                            Vertex parent = current.getParent();
+                            Vertex parent = current.parent();
                             while (parent != null) {
                                 Edge e = graph.getEdge(parent, current);
                                 sPath.push(e);
                                 current = parent;
-                                parent = current.getParent();
+                                parent = current.parent();
                             }
 
                             // find path from q to t 
                             ArrayList<Edge> tPath = new ArrayList<Edge>();
 
                             current = q;
-                            parent = current.getParent();
+                            parent = current.parent();
                             while (parent != null) {
                                 Edge e = graph.getEdge(parent, current);
                                 tPath.add(e);
                                 current = parent;
-                                parent = current.getParent();
+                                parent = current.parent();
                             }
 
                             // concatenate the the paths s->p and q->t
@@ -214,11 +228,11 @@ public class BoykovKolmogorov {
                 Vertex p = edge.getSource();
                 Vertex q = edge.getTarget();
 
-                if (tree(p) == 1 && tree(q) == 1) {
+                if (belongsToTree[p.name()] == S && belongsToTree[q.name()] == S) {
                     q.setParent(null);
                     orphans.add(q);
                 }
-                if (tree(p) == 2 && tree(q) == 2) {
+                if (belongsToTree[p.name()] == T && belongsToTree[q.name()] == T) {
                     p.setParent(null);
                     orphans.add(p);
                 }
@@ -242,15 +256,15 @@ public class BoykovKolmogorov {
             boolean findValidParent = false;
 
             // fisrt check if source or sink can be a valid parent
-            switch (this.tree(p)) {
-                case 1:
+            switch (belongsToTree[p.name()]) {
+                case S:
                     Edge es = graph.getEdge(source, p);
                     if (es.getWeight() > 0) {
                         p.setParent(source);
                         findValidParent = true;
                     }
                     break;
-                case 2:
+                case T:
                     Edge et = graph.getEdge(target, p);
                     if (et.getWeight() > 0) {
                         p.setParent(target);
@@ -260,13 +274,13 @@ public class BoykovKolmogorov {
             }
 
             // find a valid parent with vertex neighbours 
-            int[] neighbours = this.getNeighbours(p.getName(), width);
+            int[] neighbours = this.getNeighbours(p.name(), width);
             for (int i = 0; i < neighbours.length; i++) {
                 if (neighbours[i] > 0) {
                     Edge e = graph.getEdge(new Vertex(neighbours[i]), p);
                     if (e.getWeight() > 0) {
                         Vertex q = e.getSource();
-                        if ((tree(q) == tree(p)) && validOrigin(q)) {
+                        if ((belongsToTree[q.name()] == belongsToTree[p.name()]) && validOrigin(q)) {
                             p.setParent(q);
                             findValidParent = true;
                             break;
@@ -282,11 +296,11 @@ public class BoykovKolmogorov {
 
                         Edge e = graph.getEdge(new Vertex(neighbours[i]), p);
                         Vertex q = e.getSource();
-                        if (tree(q) == tree(p)) {
+                        if (belongsToTree[q.name()] == belongsToTree[p.name()]) {
                             if (e.getWeight() > 0) {
                                 active.add(q);
                             }
-                            Vertex qParent = q.getParent();
+                            Vertex qParent = q.parent();
                             if (qParent != null) {
                                 if (qParent.equals(p)) {
                                     orphans.add(q);
@@ -296,8 +310,9 @@ public class BoykovKolmogorov {
                         }
                     }
                 }
-                S_tree[p.getName()] = false;
-                T_tree[p.getName()] = false;
+                
+                // p becomes free
+                belongsToTree[p.name()] = NA;
 
                 while(active.remove(p)) {
                     
@@ -312,29 +327,29 @@ public class BoykovKolmogorov {
         }
     }
 
-    /**
-     * Test if the given vertex belongs to S or T trees, or if vertex is orphan.
-     *
-     * @param v a vertex in question
-     *
-     * @return 0 if vertex is orphan. 1 if vertex belongs to S tree. 2 if vertex
-     * belongs to T tree.
-     */
-    private int tree(Vertex v) {
-        int name = v.getName();
-        if (!S_tree[name] && !T_tree[name]) {
-            return 0;
-        }
-        if (S_tree[name]) {
-            return 1;
-        }
-        if (T_tree[name]) {
-            return 2;
-        }
-        else {
-            return -1;
-        }
-    }
+//    /**
+//     * Test if the given vertex belongs to S or T trees, or if vertex is orphan.
+//     *
+//     * @param v a vertex in question
+//     *
+//     * @return 0 if vertex is orphan. 1 if vertex belongs to S tree. 2 if vertex
+//     * belongs to T tree.
+//     */
+//    private int belongsToTree(Vertex v) {
+//        int name = v.getName();
+//        if (!S_tree[name] && !T_tree[name]) {
+//            return NA;
+//        }
+//        if (S_tree[name]) {
+//            return S;
+//        }
+//        if (T_tree[name]) {
+//            return T;
+//        }
+//        else {
+//            return -1;
+//        }
+//    }
 
     /**
      * Verify if a given
@@ -346,12 +361,12 @@ public class BoykovKolmogorov {
      * false in other case
      */
     private boolean validOrigin(Vertex q) {
-        Vertex parent = q.getParent();
+        Vertex parent = q.parent();
         while (parent != null) {
             if (parent == source || parent == target) {
                 return true;
             }
-            parent = parent.getParent();
+            parent = parent.parent();
         }
         return false;
     }
