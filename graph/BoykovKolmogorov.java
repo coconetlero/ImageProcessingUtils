@@ -327,29 +327,6 @@ public class BoykovKolmogorov {
         }
     }
 
-//    /**
-//     * Test if the given vertex belongs to S or T trees, or if vertex is orphan.
-//     *
-//     * @param v a vertex in question
-//     *
-//     * @return 0 if vertex is orphan. 1 if vertex belongs to S tree. 2 if vertex
-//     * belongs to T tree.
-//     */
-//    private int belongsToTree(Vertex v) {
-//        int name = v.getName();
-//        if (!S_tree[name] && !T_tree[name]) {
-//            return NA;
-//        }
-//        if (S_tree[name]) {
-//            return S;
-//        }
-//        if (T_tree[name]) {
-//            return T;
-//        }
-//        else {
-//            return -1;
-//        }
-//    }
 
     /**
      * Verify if a given
