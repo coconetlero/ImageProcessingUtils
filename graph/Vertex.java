@@ -39,7 +39,7 @@ public class Vertex {
      * Return the name of this vertex
      * @return
      */
-    public int getName() {
+    public int name() {
         return name;
     }
 
@@ -47,7 +47,7 @@ public class Vertex {
      * Return the parent vertex, if any.
      * @return the parent vertex, if any. Else return null;
      */
-    public Vertex getParent() {
+    public Vertex parent() {
        return (parent != null) ? parent : null;
     }
 
@@ -81,7 +81,7 @@ public class Vertex {
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof Vertex) {
-            return ((Vertex)obj).getName() == name;
+            return ((Vertex)obj).name() == name;
         }
         else {
             return false;
