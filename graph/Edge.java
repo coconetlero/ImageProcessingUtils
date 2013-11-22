@@ -96,9 +96,9 @@ public class Edge {
 
     @Override
     public String toString() {
-            return "(" + source.getName() + 
+            return "(" + source.name() + 
                     " - " + this.weight + " - " +
-                    target.getName() + ")";
+                    target.name() + ")";
     }
 
     /**

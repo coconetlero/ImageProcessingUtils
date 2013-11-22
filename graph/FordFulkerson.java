@@ -156,12 +156,12 @@ public class FordFulkerson {
         if (tree.contains(target)) {
             ArrayList<Edge> sPath = new ArrayList<Edge>();
             Vertex current = target;
-            Vertex parent = current.getParent();
+            Vertex parent = current.parent();
             while (parent != null) {
                 Edge e = tree.getEdge(parent, current);
                 sPath.add(e);
                 current = parent;
-                parent = current.getParent();
+                parent = current.parent();
             }
             
             Edge[] path = new Edge[sPath.size()];

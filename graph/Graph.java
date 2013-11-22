@@ -129,7 +129,7 @@ public class Graph {
     public Vertex getVertex(int name) {        
         Set<Vertex> V = graph.keySet();
         for (Vertex v : V) {
-            if (v.getName() == name) {
+            if (v.name() == name) {
                 return v;
             }
         }
@@ -317,8 +317,8 @@ public class Graph {
             // from target retrieve the source
             Stack<Vertex> sPath = new Stack<Vertex>();
             sPath.push(target);
-            while (sPath.peek().getParent() != null) {
-                sPath.push(sPath.peek().getParent());
+            while (sPath.peek().parent() != null) {
+                sPath.push(sPath.peek().parent());
             }
 
             Vertex[] path = new Vertex[sPath.size()];
@@ -364,13 +364,13 @@ public class Graph {
 
         while (vertexIterator.hasNext()) {
             Vertex v = (Vertex) vertexIterator.next();
-            graphString += (v.getName() + " -> [");
+            graphString += (v.name() + " -> [");
             ArrayList<Edge> edges = graph.get((Vertex) v);
 
             for (int i = 0; i < edges.size(); i++) {
                 graphString += (i == 0) ? "" : ", ";
                 Edge e = edges.get(i);
-                graphString += ("(" + e.getTarget().getName() + ", "
+                graphString += ("(" + e.getTarget().name() + ", "
                                 + e.getWeight() + ")");
             }
             graphString += ("] \n");

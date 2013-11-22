@@ -167,7 +167,7 @@ public class Mincut_Segment implements PlugInFilter {
 
         byte[] segmented = new byte[pixels.length];
         for (Vertex v : mincut) {
-            int name = v.getName();
+            int name = v.name();
             if (name == 0 || name  == pixels.length + 2) {
                 continue;
             } else {
