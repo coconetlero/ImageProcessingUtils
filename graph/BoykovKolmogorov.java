@@ -44,27 +44,23 @@ public class BoykovKolmogorov {
     /**
      * Flag indicating the affiliation of each vertex, for vertexes in S tree
      */
-    
     /**
      * Node belongs to?
      */
     private int[] belongsToTree;
-    
     /**
      * S-tree
      */
     private static final int S = 1;
-
     /**
      * T-tree
      */
     private static final int T = 2;
-    
     /**
      * Not belonging to any tree
      */
     private static final int NA = 0;
-    
+
     /**
      *
      * @param graph
@@ -82,9 +78,10 @@ public class BoykovKolmogorov {
 
         this.orphans = new LinkedList<Vertex>();
 
-        this.belongsToTree = new int[graph.size()];        
+        this.belongsToTree = new int[graph.size()];
         belongsToTree[source.name()] = S;
-        
+        belongsToTree[target.name()] = T;
+
     }
 
     /**
@@ -118,12 +115,12 @@ public class BoykovKolmogorov {
 
                 for (Edge edge : currentEdges) {
                     // if tree_cap(p->q) > 0
-                    if (edge.getWeight() > 0) {                        
+                    if (edge.getWeight() > 0) {
                         Vertex q = edge.getTarget();
                         // if vertex is free
-                        if (belongsToTree[q.name()] == NA) {
+                        if (tree(q) == NA) {
                             q.setParent(p);
-                            switch (belongsToTree[p.name()]) {
+                            switch (tree(p)) {
                                 case S:
                                     belongsToTree[q.name()] = S;
                                     break;
@@ -133,7 +130,7 @@ public class BoykovKolmogorov {
                             }
                             active.add(q);
                         }
-                        if ((belongsToTree[q.name()] != NA) && (belongsToTree[q.name()] != belongsToTree[p.name()])) {
+                        if ((tree(q) != NA) && (tree(q)!= tree(p))) {
                             // return P = PATH_(s->t)                                                       
 //                            Stack<Edge> sPath = new Stack<Edge>();
                             LinkedList<Edge> sPath = new LinkedList<Edge>();
@@ -163,7 +160,7 @@ public class BoykovKolmogorov {
                             // concatenate the the paths s->p and q->t
                             Edge[] path = new Edge[sPath.size() + tPath.size() + 1];
                             int idx = 0;
-                            while (!sPath.isEmpty()){
+                            while (!sPath.isEmpty()) {
                                 path[idx] = sPath.pop();
                                 idx++;
                             }
@@ -228,11 +225,11 @@ public class BoykovKolmogorov {
                 Vertex p = edge.getSource();
                 Vertex q = edge.getTarget();
 
-                if (belongsToTree[p.name()] == S && belongsToTree[q.name()] == S) {
+                if (tree(p) == S && tree(q) == S) {
                     q.setParent(null);
                     orphans.add(q);
                 }
-                if (belongsToTree[p.name()] == T && belongsToTree[q.name()] == T) {
+                if (tree(p) == T && tree(q) == T) {
                     p.setParent(null);
                     orphans.add(p);
                 }
@@ -256,7 +253,7 @@ public class BoykovKolmogorov {
             boolean findValidParent = false;
 
             // fisrt check if source or sink can be a valid parent
-            switch (belongsToTree[p.name()]) {
+            switch (tree(p)) {
                 case S:
                     Edge es = graph.getEdge(source, p);
                     if (es.getWeight() > 0) {
@@ -280,7 +277,7 @@ public class BoykovKolmogorov {
                     Edge e = graph.getEdge(new Vertex(neighbours[i]), p);
                     if (e.getWeight() > 0) {
                         Vertex q = e.getSource();
-                        if ((belongsToTree[q.name()] == belongsToTree[p.name()]) && validOrigin(q)) {
+                        if ((tree(q) == tree(p)) && validOrigin(q)) {
                             p.setParent(q);
                             findValidParent = true;
                             break;
@@ -296,7 +293,7 @@ public class BoykovKolmogorov {
 
                         Edge e = graph.getEdge(new Vertex(neighbours[i]), p);
                         Vertex q = e.getSource();
-                        if (belongsToTree[q.name()] == belongsToTree[p.name()]) {
+                        if (tree(q) == tree(p)) {
                             if (e.getWeight() > 0) {
                                 active.add(q);
                             }
@@ -310,14 +307,13 @@ public class BoykovKolmogorov {
                         }
                     }
                 }
-                
+
                 // p becomes free
                 belongsToTree[p.name()] = NA;
 
-                while(active.remove(p)) {
-                    
+                while (active.remove(p)) {
                 }
-                
+
 //                int idx = active.indexOf(p);
 //                while (idx >= 0) {
 //                    active.remove(idx);
@@ -327,6 +323,15 @@ public class BoykovKolmogorov {
         }
     }
 
+    /**
+     * Indicates the affiliation of each vertex v
+     *
+     * @param v the vertex
+     * @return
+     */
+    private int tree(Vertex v) {
+        return belongsToTree[v.name()];
+    }
 
     /**
      * Verify if a given
@@ -405,7 +410,7 @@ public class BoykovKolmogorov {
         // create a tree until target is reached 
         while (!S.empty()) {
             try {
-                Vertex v = S.pop();                
+                Vertex v = S.pop();
                 ArrayList<Edge> E = graph.getEdges(v);
                 // if v has an unvisited neighbour w                
                 for (Edge edge : E) {
