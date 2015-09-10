@@ -116,13 +116,8 @@ public class Hessian {
             float root1 = (float) ((trace + alpha) * 0.5);
             float root2 = (float) ((trace - alpha) * 0.5);
 
-            if (root1 < root2) {
-                this.l1[i] = root1;
-                this.l2[i] = root2;
-            } else {
-                this.l1[i] = root2;
-                this.l2[i] = root1;
-            }
+            l1[i] = Math.min(root1, root2);
+            l2[i] = Math.max(root1, root2);  
         }
     }
     
@@ -143,14 +138,9 @@ public class Hessian {
 
             float root1 = Math.abs((float) ((trace + alpha) * 0.5));
             float root2 = Math.abs((float) ((trace - alpha) * 0.5));
-
-            if (root1 < root2) {
-                this.l1[i] = root1;
-                this.l2[i] = root2;
-            } else {
-                this.l1[i] = root2;
-                this.l2[i] = root1;
-            }
+            
+            l1[i] = Math.min(root1, root2);
+            l2[i] = Math.max(root1, root2);            
         }
     }
 
