@@ -45,7 +45,7 @@ public class Hessian {
     /**
      * Calculate Ixx, Iyy, Ixy elements of the Hessian Matrix
      */
-    public void composeHessianMatrix() {
+    public void generateHessianMatrix() {
         ImageDerivative derivative = new ImageDerivative(ip, sigma);
         this.Ixx = (float[]) derivative.dXX().getPixels();
         this.Ixy = (float[]) derivative.dXY().getPixels();
