@@ -5,7 +5,7 @@ import ij.process.ImageProcessor;
 
 /**
  *
- * @author <a ref ="zianfanti@gmail.com"> Zian Fanti Gutierrez<a/>
+ * @author <a ref ="zianfanti@gmail.com"> Zian Fanti Gutierrez</a>
  * @version  0.0.2-0
  */
 public class ImageDerivative {
