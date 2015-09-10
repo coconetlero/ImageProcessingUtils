@@ -99,7 +99,7 @@ public class Hessian {
     }
 
     /**
-     * Compute the eigenvalues and asigns to the variables l1 and l2 depending
+     * Compute the eigenvalues and assigns to the variables l1 and l2 depending
      * of this value.
      */
     public void computeEigenValues() {
@@ -115,6 +115,34 @@ public class Hessian {
 
             float root1 = (float) ((trace + alpha) * 0.5);
             float root2 = (float) ((trace - alpha) * 0.5);
+
+            if (root1 < root2) {
+                this.l1[i] = root1;
+                this.l2[i] = root2;
+            } else {
+                this.l1[i] = root2;
+                this.l2[i] = root1;
+            }
+        }
+    }
+    
+    /**
+     * Compute the absolute value of  the eigenvalues and assigns to the variables 
+     * l1 and l2 depending of this value. This is |l1| < |l2|
+     */
+    public void computeAbsEigenValues() {
+        this.l1 = new float[ip.getWidth() * ip.getHeight()];
+        this.l2 = new float[ip.getWidth() * ip.getHeight()];
+
+        double alpha;
+        double trace;
+
+        for (int i = 0; i < l1.length; i++) {
+            trace = Ixx[i] + Iyy[i];
+            alpha = Math.sqrt(Math.pow(Ixx[i] - Iyy[i], 2) + (4 * (Ixy[i] * Ixy[i])));
+
+            float root1 = Math.abs((float) ((trace + alpha) * 0.5));
+            float root2 = Math.abs((float) ((trace - alpha) * 0.5));
 
             if (root1 < root2) {
                 this.l1[i] = root1;
