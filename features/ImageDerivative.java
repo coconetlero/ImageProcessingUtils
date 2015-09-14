@@ -14,22 +14,22 @@ public class ImageDerivative {
     private ImageProcessor ip;
 
     /** The standar deviation for the Gaussian function */
-    private float sigma;
+    private double sigma;
 
     /** First partial derivative on X */
-    private float[] dX;
+    private double[] dX;
 
     /** First partial derivative on Y */
-    private float[] dY;
+    private double[] dY;
 
     /** Second partial derivative on X*/
-    private float[] dXX;
+    private double[] dXX;
 
     /** Second partial derivative on Y*/
-    private float[] dYY;
+    private double[] dYY;
 
     /** Second partial derivative on XY */
-    private float[] dXY;
+    private double[] dXY;
 
     /** Convolver object for convolutions */
     private Convolver convolve;
@@ -47,7 +47,7 @@ public class ImageDerivative {
      * @param ip
      * @param sigma The standar deviation in the Gaussian function
      */
-    public ImageDerivative(ImageProcessor ip, float sigma) {
+    public ImageDerivative(ImageProcessor ip, double sigma) {
         this.ip = ip;
         this.sigma = sigma;
         this.convolve = new Convolver();
@@ -61,14 +61,14 @@ public class ImageDerivative {
     public ImageProcessor dX() {
         ImageProcessor image = ip.duplicate();
         GaussianDerivative gaussian = new GaussianDerivative();
-        float[] gaussianFilter = gaussian.gaussianKernel(sigma);
-        float[] gaussianFirstDerFilter = gaussian.firstDerivativeKernel(sigma);
+        double[] gaussianFilter = gaussian.gaussianKernel(sigma);
+        double[] gaussianFirstDerFilter = gaussian.firstDerivativeKernel(sigma);
 
         convolve.setNormalize(false);
         convolve.convolveFloat(image, gaussianFirstDerFilter, gaussianFirstDerFilter.length, 1);
         convolve.convolveFloat(image, gaussianFilter, 1, gaussianFilter.length);
 
-        dX = (float[]) image.getPixels();
+        dX = (double[]) image.getPixels();
         return image;
     }
 
@@ -81,14 +81,14 @@ public class ImageDerivative {
     public ImageProcessor dY() {
         ImageProcessor image = ip.duplicate();
         GaussianDerivative gaussian = new GaussianDerivative();
-        float[] gaussianFilter = gaussian.gaussianKernel(sigma);
-        float[] gaussianFirstDerFilter = gaussian.firstDerivativeKernel(sigma);
+        double[] gaussianFilter = gaussian.gaussianKernel(sigma);
+        double[] gaussianFirstDerFilter = gaussian.firstDerivativeKernel(sigma);
 
         convolve.setNormalize(false);
         convolve.convolveFloat(image, gaussianFirstDerFilter, 1, gaussianFirstDerFilter.length);
         convolve.convolveFloat(image, gaussianFilter, gaussianFilter.length, 1);
 
-        dY = (float[]) image.getPixels();
+        dY = (double[]) image.getPixels();
         return image;
     }
 
@@ -101,14 +101,14 @@ public class ImageDerivative {
     public ImageProcessor dXX() {
         ImageProcessor image = ip.duplicate();
         GaussianDerivative gaussian = new GaussianDerivative();
-        float[] gaussianFilter = gaussian.gaussianKernel(sigma);
-        float[] gaussianSecondDerFilter = gaussian.secondDerivativeKernel(sigma);
+        double[] gaussianFilter = gaussian.gaussianKernel(sigma);
+        double[] gaussianSecondDerFilter = gaussian.secondDerivativeKernel(sigma);
 
         convolve.setNormalize(false);
         convolve.convolveFloat(image, gaussianSecondDerFilter, gaussianSecondDerFilter.length, 1);
         convolve.convolveFloat(image, gaussianFilter, 1, gaussianFilter.length);
 
-        dXX = (float[]) image.getPixels();
+        dXX = (double[]) image.getPixels();
         return image;
     }
 
@@ -121,14 +121,14 @@ public class ImageDerivative {
     public ImageProcessor dYY() {
         ImageProcessor image = ip.duplicate();
         GaussianDerivative gaussian = new GaussianDerivative();
-        float[] gaussianFilter = gaussian.gaussianKernel(sigma);
-        float[] gaussianSecondDerFilter = gaussian.secondDerivativeKernel(sigma);
+        double[] gaussianFilter = gaussian.gaussianKernel(sigma);
+        double[] gaussianSecondDerFilter = gaussian.secondDerivativeKernel(sigma);
 
         convolve.setNormalize(false);
         convolve.convolveFloat(image, gaussianSecondDerFilter, 1, gaussianSecondDerFilter.length);
         convolve.convolveFloat(image, gaussianFilter, gaussianFilter.length, 1);
 
-        dYY = (float[]) image.getPixels();
+        dYY = (double[]) image.getPixels();
         return image;
     }
 
@@ -141,13 +141,13 @@ public class ImageDerivative {
     public ImageProcessor dXY() {
         ImageProcessor image = ip.duplicate();
         GaussianDerivative gaussian = new GaussianDerivative();
-        float[] gaussianFirstDerFilter = gaussian.firstDerivativeKernel(sigma);
+        double[] gaussianFirstDerFilter = gaussian.firstDerivativeKernel(sigma);
 
         convolve.setNormalize(false);
         convolve.convolveFloat(image, gaussianFirstDerFilter, 1, gaussianFirstDerFilter.length);
         convolve.convolveFloat(image, gaussianFirstDerFilter, gaussianFirstDerFilter.length, 1);
 
-        dXY = (float[]) image.getPixels();
+        dXY = (double[]) image.getPixels();
         return image;
     }
 
@@ -156,10 +156,10 @@ public class ImageDerivative {
      *
      * @return
      */
-    public static ImageProcessor dX(ImageProcessor image, float s) {
+    public static ImageProcessor dX(ImageProcessor image, double s) {
         GaussianDerivative gaussian = new GaussianDerivative();
-        float[] gaussianFilter = gaussian.gaussianKernel(s);
-        float[] gaussianFirstDerFilter = gaussian.firstDerivativeKernel(s);
+        double[] gaussianFilter = gaussian.gaussianKernel(s);
+        double[] gaussianFirstDerFilter = gaussian.firstDerivativeKernel(s);
 
         Convolver convolve = new Convolver();
 
@@ -176,10 +176,10 @@ public class ImageDerivative {
      * @return a new <code>FloatProcessor</code> corresponding to the gradient in
      * vertical direction.
      */
-    public static ImageProcessor dY(ImageProcessor image, float s) {
+    public static ImageProcessor dY(ImageProcessor image, double s) {
         GaussianDerivative gaussian = new GaussianDerivative();
-        float[] gaussianFilter = gaussian.gaussianKernel(s);
-        float[] gaussianFirstDerFilter = gaussian.firstDerivativeKernel(s);
+        double[] gaussianFilter = gaussian.gaussianKernel(s);
+        double[] gaussianFirstDerFilter = gaussian.firstDerivativeKernel(s);
 
         Convolver convolve = new Convolver();
 
@@ -197,10 +197,10 @@ public class ImageDerivative {
      * @return a new <code>FloatProcessor</code> corresponding to the gradient in
      * vertical direction.
      */
-    public static ImageProcessor dXX(ImageProcessor image, float s) {
+    public static ImageProcessor dXX(ImageProcessor image, double s) {
         GaussianDerivative gaussian = new GaussianDerivative();
-        float[] gaussianFilter = gaussian.gaussianKernel(s);
-        float[] gaussianSecondDerFilter = gaussian.secondDerivativeKernel(s);
+        double[] gaussianFilter = gaussian.gaussianKernel(s);
+        double[] gaussianSecondDerFilter = gaussian.secondDerivativeKernel(s);
 
         Convolver convolve = new Convolver();
 
@@ -218,10 +218,10 @@ public class ImageDerivative {
      * @return a new <code>FloatProcessor</code> corresponding to the gradient in
      * vertical direction.
      */
-    public static ImageProcessor dYY(ImageProcessor image, float s) {
+    public static ImageProcessor dYY(ImageProcessor image, double s) {
         GaussianDerivative gaussian = new GaussianDerivative();
-        float[] gaussianFilter = gaussian.gaussianKernel(s);
-        float[] gaussianSecondDerFilter = gaussian.secondDerivativeKernel(s);
+        double[] gaussianFilter = gaussian.gaussianKernel(s);
+        double[] gaussianSecondDerFilter = gaussian.secondDerivativeKernel(s);
 
         Convolver convolve = new Convolver();
 
@@ -239,9 +239,9 @@ public class ImageDerivative {
      * @return a new <code>FloatProcessor</code> corresponding to the gradient in
      * vertical direction.
      */
-    public static ImageProcessor dXY(ImageProcessor image, float s) {
+    public static ImageProcessor dXY(ImageProcessor image, double s) {
         GaussianDerivative gaussian = new GaussianDerivative();
-        float[] gaussianFirstDerFilter = gaussian.firstDerivativeKernel(s);
+        double[] gaussianFirstDerFilter = gaussian.firstDerivativeKernel(s);
 
         Convolver convolve = new Convolver();
 
@@ -265,7 +265,7 @@ public class ImageDerivative {
     /**
      * @return the gradX
      */
-    public float[] getDX() {
+    public double[] getDX() {
         if (dX == null) {
             dX();
         }
@@ -276,7 +276,7 @@ public class ImageDerivative {
     /**
      * @return the gradY
      */
-    public float[] getDY() {
+    public double[] getDY() {
         if (dY == null) {
             dY();
         }
@@ -287,7 +287,7 @@ public class ImageDerivative {
     /**
      * @return the gradX
      */
-    public float[] getDXX() {
+    public double[] getDXX() {
         if (dXX == null) {
             dXX();
         }
@@ -298,7 +298,7 @@ public class ImageDerivative {
     /**
      * @return the gradY
      */
-    public float[] getDYY() {
+    public double[] getDYY() {
         if (dYY == null) {
             dYY();
         }
@@ -309,7 +309,7 @@ public class ImageDerivative {
     /**
      * @return the gradY
      */
-    public float[] getDXY() {
+    public double[] getDXY() {
         if (dXY == null) {
             dXY();
         }
@@ -336,7 +336,7 @@ public class ImageDerivative {
     /**
      * @return the sigma
      */
-    public float getSigma() {
+    public double getSigma() {
         return sigma;
     }
 
@@ -344,7 +344,7 @@ public class ImageDerivative {
     /**
      * @param sigma the sigma to set
      */
-    public void setSigma(float sigma) {
+    public void setSigma(double sigma) {
         this.sigma = sigma;
         flush();
     }
