@@ -1,6 +1,5 @@
 package features;
 
-import ij.IJ;
 import ij.process.FloatProcessor;
 import ij.process.ImageProcessor;
 import java.util.Arrays;
