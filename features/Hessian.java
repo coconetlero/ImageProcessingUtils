@@ -22,9 +22,9 @@ public class Hessian {
 
     private float[] Iyy;
 
-    private float l1[];
+    private double l1[];
 
-    private float l2[];
+    private double l2[];
 
     public Hessian(ImageProcessor ip, float sigma) {
         this.ip = ip;
@@ -63,8 +63,8 @@ public class Hessian {
      * <code> L1 = 1/2 ((dxx + dyy) +/- SQRT((dxx - dyy)^2 + 4 dxy^2)) </code>
      */
     public void computeEigenValues() {
-        this.l1 = new float[ip.getWidth() * ip.getHeight()];
-        this.l2 = new float[ip.getWidth() * ip.getHeight()];
+        this.l1 = new double[ip.getWidth() * ip.getHeight()];
+        this.l2 = new double[ip.getWidth() * ip.getHeight()];
 
         double alpha;
         double trace;
@@ -72,8 +72,8 @@ public class Hessian {
         for (int i = 0; i < l1.length; i++) {
             trace = Ixx[i] + Iyy[i];
             alpha = Math.sqrt(Math.pow(Ixx[i] - Iyy[i], 2) + (4 * (Ixy[i] * Ixy[i])));
-            float root1 = (float) ((trace + alpha) * 0.5);
-            float root2 = (float) ((trace - alpha) * 0.5);
+            double root1 = (trace + alpha) * 0.5;
+            double root2 = (trace - alpha) * 0.5;
 
             l1[i] = Math.min(root1, root2);
             l2[i] = Math.max(root1, root2);  
@@ -85,8 +85,8 @@ public class Hessian {
      * l1 and l2 depending of this value. This is |l1| < |l2|
      */
     public void computeAbsEigenValues() {
-        this.l1 = new float[ip.getWidth() * ip.getHeight()];
-        this.l2 = new float[ip.getWidth() * ip.getHeight()];
+        this.l1 = new double[ip.getWidth() * ip.getHeight()];
+        this.l2 = new double[ip.getWidth() * ip.getHeight()];
 
         double alpha;
         double trace;
@@ -95,8 +95,8 @@ public class Hessian {
             trace = Ixx[i] + Iyy[i];
             alpha = Math.sqrt(Math.pow(Ixx[i] - Iyy[i], 2) + (4 * (Ixy[i] * Ixy[i])));
 
-            float root1 = (float) ((trace + alpha) * 0.5);
-            float root2 = (float) ((trace - alpha) * 0.5);
+            double root1 = (trace + alpha) * 0.5;
+            double root2 = (trace - alpha) * 0.5;
             
             l1[i] = Math.abs(root1) <= Math.abs(root2) ? root1 : root2;            
             l2[i] = Math.abs(root1) > Math.abs(root2) ? root1 : root2;
@@ -115,14 +115,14 @@ public class Hessian {
     /**
      * @return the l1
      */
-    public float[] getL1() {
+    public double[] getL1() {
         return l1;
     }
 
     /**
      * @return the l2
      */
-    public float[] getL2() {
+    public double[] getL2() {
         return l2;
     }
 
