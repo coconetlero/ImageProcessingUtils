@@ -8,7 +8,7 @@ import java.util.Arrays;
 /**
  * Class that implements diverse methods to find edges on images. 
  * 
- * @author <a ref ="zianfanti@gmail.com"> Zian Fanti Gutierrez<a/>
+ * @author <a ref ="zianfanti@gmail.com"> Zian Fanti Gutierrez</a>
  * @version 0.0.1
  */
 public class Edge {
