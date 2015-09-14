@@ -58,49 +58,9 @@ public class Hessian {
     }
 
     /**
-     * Compute the smallest eigenvalue of the current 2 x 2 Hessian matrix
-     *
-     * @return the eigenvalue result of
-     * <code>L2 = 1/ 2 * ((dxx + dyy) - SQRT((dxx - dyy)^2 + 4 dxy^2))</code>
-     */
-    public float[] smallEigenvalue() {
-        double alpha = 0;
-        double trace = 0;
-        float[] smallEigenvalue = new float[ip.getWidth() * ip.getHeight()];
-
-        for (int i = 0; i < smallEigenvalue.length; i++) {
-            trace = Ixx[i] + Iyy[i];
-            alpha = Math.sqrt(Math.pow(Ixx[i] - Iyy[i], 2) + (4 * (Ixy[i] * Ixy[i])));
-
-            smallEigenvalue[i] = (float) ((trace - alpha) * 0.5);
-        }
-        return smallEigenvalue;
-    }
-
-    /**
-     * Compute the largest eigenvalue of the current 2 x 2 Hessian matrix
-     *
-     * @return the eigenvalue result of
-     * <code> L1 = 1/2 ((dxx + dyy) + SQRT((dxx - dyy)^2 + 4 dxy^2)) </code>
-     */
-    public float[] largeEigenvalue() {
-        double alpha = 0;
-        double trace = 0;
-
-        float[] largeEigenvalue = new float[ip.getWidth() * ip.getHeight()];
-
-        for (int i = 0; i < largeEigenvalue.length; i++) {
-            trace = Ixx[i] + Iyy[i];
-            alpha = Math.sqrt(Math.pow(Ixx[i] - Iyy[i], 2) + (4 * (Ixy[i] * Ixy[i])));
-
-            largeEigenvalue[i] = (float) ((trace + alpha) * 0.5);
-        }
-        return largeEigenvalue;
-    }
-
-    /**
      * Compute the eigenvalues and assigns to the variables l1 and l2 depending
-     * of this value.
+     * of this value. The eigenvalues are calculated from 
+     * <code> L1 = 1/2 ((dxx + dyy) +/- SQRT((dxx - dyy)^2 + 4 dxy^2)) </code>
      */
     public void computeEigenValues() {
         this.l1 = new float[ip.getWidth() * ip.getHeight()];
@@ -108,11 +68,10 @@ public class Hessian {
 
         double alpha;
         double trace;
-
+        
         for (int i = 0; i < l1.length; i++) {
             trace = Ixx[i] + Iyy[i];
             alpha = Math.sqrt(Math.pow(Ixx[i] - Iyy[i], 2) + (4 * (Ixy[i] * Ixy[i])));
-
             float root1 = (float) ((trace + alpha) * 0.5);
             float root2 = (float) ((trace - alpha) * 0.5);
 
@@ -136,11 +95,11 @@ public class Hessian {
             trace = Ixx[i] + Iyy[i];
             alpha = Math.sqrt(Math.pow(Ixx[i] - Iyy[i], 2) + (4 * (Ixy[i] * Ixy[i])));
 
-            float root1 = Math.abs((float) ((trace + alpha) * 0.5));
-            float root2 = Math.abs((float) ((trace - alpha) * 0.5));
+            float root1 = (float) ((trace + alpha) * 0.5);
+            float root2 = (float) ((trace - alpha) * 0.5);
             
-            l1[i] = Math.min(root1, root2);
-            l2[i] = Math.max(root1, root2);            
+            l1[i] = Math.abs(root1) <= Math.abs(root2) ? root1 : root2;            
+            l2[i] = Math.abs(root1) > Math.abs(root2) ? root1 : root2;
         }
     }
 
