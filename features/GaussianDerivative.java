@@ -13,8 +13,8 @@ package features;
  * <code>G(x,t) = (1/SQRT(2*PI*t))e(x^2/2*t)</code>
  * where t is the scale of the features and <code>t=s^2</code>
  *
- * @author <a ref ="zianfanti@gmail.com"> Zian Fanti Gutierrez<a/>
- * @version  0.2.3
+ * @author <a ref ="zianfanti@gmail.com"> Zian Fanti Gutierrez</a>
+ * @version  0.3.0
  */
 public class GaussianDerivative {
 
@@ -33,11 +33,11 @@ public class GaussianDerivative {
      * @param sigma  the standar deviation for the gaussian function
      * @return the value of the function for given parameters
      */
-    private float gaussian(int x, float sigma) {
-        float sigmaSquare = sigma * sigma;
+    private double gaussian(int x, double sigma) {
+        double sigmaSquare = sigma * sigma;
         double norm = 1.0 / Math.sqrt(2.0 * PI * sigmaSquare);
         double gaussianFactor = Math.exp(-(x * x) / (2 * sigmaSquare));
-        return (float) (norm * gaussianFactor);
+        return gaussianFactor * norm;
     }
 
     /**
@@ -46,10 +46,10 @@ public class GaussianDerivative {
      * @param sigma
      * @return
      */
-    public float[] gaussianKernel(float sigma) {        
+    public double[] gaussianKernel(double sigma) {        
         int halfwidth = (int)(sigma * 4);
         int width = (halfwidth * 2) + 1;
-        float[] kernel = new float[width];
+        double[] kernel = new double[width];
 
         for (int x = -halfwidth; x <= halfwidth; x++) {
             kernel[x + halfwidth] = gaussian(x, sigma);
@@ -63,12 +63,12 @@ public class GaussianDerivative {
      * @param sigma
      * @return
      */
-    public float[] firstDerivativeKernel(float sigma) {
+    public double[] firstDerivativeKernel(double sigma) {
         int halfwidth = (int)(sigma * 4);
         int width = (halfwidth * 2) + 1;
-        float[] kernel = new float[width];
+        double[] kernel = new double[width];
 
-        float sigmaSquare = sigma * sigma;
+        double sigmaSquare = sigma * sigma;
         for (int x = -halfwidth; x <= halfwidth; x++) {
             kernel[x + halfwidth] = -(x / sigmaSquare) * gaussian(x, sigma);
         }
@@ -80,14 +80,14 @@ public class GaussianDerivative {
      * @param sigma
      * @return
      */
-    public float[] secondDerivativeKernel(float sigma) {
+    public double[] secondDerivativeKernel(double sigma) {
         int halfwidth = (int)(sigma * 4);
         int width = (halfwidth * 2) + 1;
-        float[] kernel = new float[width];
+        double[] kernel = new double[width];
         
-        float sigmaSquare = sigma * sigma;
+        double sigmaSquare = sigma * sigma;
         for (int x = -halfwidth; x <= halfwidth; x++) {
-            kernel[x + halfwidth] = (((x * x) - sigmaSquare) / ((float)Math.pow(sigma, 4))) * gaussian(x, sigma);
+            kernel[x + halfwidth] = (((x * x) - sigmaSquare) / (Math.pow(sigma, 4))) * gaussian(x, sigma);
         }
         return kernel;
     }
