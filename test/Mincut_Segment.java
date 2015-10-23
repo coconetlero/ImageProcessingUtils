@@ -3,7 +3,6 @@ package test;
 
 import graph.BoykovKolmogorov;
 import graph.Edge;
-import graph.FordFulkerson;
 import graph.Graph;
 import graph.Vertex;
 import ij.ImagePlus;
