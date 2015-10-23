@@ -35,7 +35,8 @@ public class Frangi {
     private float currentSigma;
 
     /**
-     *
+     * Default Constructor
+     * 
      * @param alpha
      * @param beta
      * @param c
