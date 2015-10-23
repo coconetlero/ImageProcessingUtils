@@ -9,6 +9,7 @@ import java.util.Arrays;
  * ImageJ.
  *
  * @author <a ref ="zianfanti@gmail.com"> Zian Fanti Gutierrez</a>
+ * 
  * @Article{Frangi 1997, author = "F. Frangi & w. Niessen", title = "Multiscale
  * vessel enhancement filtering", journal = "<i>Medical Image Computing and
  * Computer-Assisted Interventation</i>", year = "1997", volume = "1496", pages
